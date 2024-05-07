@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Space+Grotesk:wght@300..700&display=swap');
+
+
+h1, h2, h3, p, ul {
+    font-family: "Space Grotesk", sans-serif;
+}
+
+ul {
+    font-size: 18px;
+    list-style-type: none; 
+    padding: 0;
+}
+
+li {
+    margin-bottom: 20px; 
+    margin-left: 15px
+}
+
+h2 {
+    font-size: 28;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 26;
+    font-weight: 400;
+}
+
+body {
+    background-color: #C1C0B6;
+    margin: 0;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    max-width: 100%; 
+    
+}
+
+header {
+    height: 90px;
+    position: fixed;
+    width: 100%;
+    background-color: #C1C0B6;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    border-bottom: solid;
+}
+
+nav {
+    display: flex;
+    margin-right: 30px;
+    justify-content: flex-end;
+    gap: 40px;
+    flex-grow: 1; 
+}
+
+header a {
+    color: black;
+    text-decoration: none;
+    transition: font-size 0.3s;
+}
+
+header a:hover {
+    font-size: 110%;
+} 
+
+header a:active {
+    color: #515050;
+}
+
+.header-name {
+    margin-left: 30px;
+}
+
+.grid-container {
+    display: grid;
+    column-gap: 25px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.resume-item {
+    display: flex;
+    flex: 1 1;
+}
+
+.resume-header, .item-description {
+    padding: 10px;
+}
+
+.resume-header {
+    padding-left: 30px;
+    border-right: solid;
+    flex: 1;
+}
+
+.item-description {
+    flex: 2;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+}
+
+.company-image {
+    flex: 1;
+}
+
+.job-title {
+    flex: 3;
+    margin: 0; 
+}
+
+.job-title h2 {
+    margin-bottom: 0;
+}
+
+.job-title p {
+    margin-top: 0;
+}
+
+.experience-item {
+    border-bottom: solid;
+    border-width: 1px;
+}
+
+.last {
+    margin-top: 15px;
+    border: none;
+}
+
+.item-description p {
+    padding-left: 15px;
+}
+
+.skills-item {
+    font-size: 28px; 
+    font-weight: 600px; 
+    color: #482823;
+}
+
+.skills-item li {
+    transition: font-size 0.3s;
+}
+
+.skills-item li:hover {
+    color: #92564d;
+    cursor: default;
+    font-size: 120%;
+}
+
+.course-item {
+    color: #482823;
+    font-size: 20px;
+}
+
+.course-item li {
+    transition: font-size 0.3s;
+}
+
+.course-item li:hover {
+    color: #92564d;
+    cursor: default;
+    font-size: 105%;
+}
+
+.page-title {
+    margin-top: 90px;
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.project-header {
+    display: flex;
+}
+
+.pdf-download {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.download-button {
+    text-decoration: none;
+    color: #482823;
+    padding: 10px;
+    border: solid;
+    border-color: #482823;
+}
+
+.download-button:hover {
+    color: #73443c;
+    border-color: #73443c;
+}
+
+.download-button:active {
+    color: #92564d;
+    border-color: #92564d;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+    background-color: rgb(139, 140, 129);
+    margin: 0;
+}
+
+.footer-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 90px;
+}
