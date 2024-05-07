@@ -6,7 +6,7 @@ h1, h2, h3, p, ul {
 }
 
 ul {
-    font-size: 18px;
+    font-size: 14px;
     list-style-type: none; 
     padding: 0;
 }
@@ -17,12 +17,12 @@ li {
 }
 
 h2 {
-    font-size: 28;
+    font-size: 24;
     font-weight: 600;
 }
 
 h3 {
-    font-size: 26;
+    font-size: 22;
     font-weight: 400;
 }
 
@@ -39,14 +39,14 @@ html, body {
 }
 
 header {
-    height: 90px;
+    height: 70px;
     position: fixed;
     width: 100%;
     background-color: #C1C0B6;
     display: flex;
     align-items: center;
-    font-size: 18px;
-    border-bottom: solid;
+    font-size: 14px;
+    border-bottom: solid 1px;
 }
 
 nav {
@@ -137,7 +137,7 @@ header a:active {
 }
 
 .skills-item {
-    font-size: 28px; 
+    font-size: 24px; 
     font-weight: 600px; 
     color: #482823;
 }
@@ -154,7 +154,7 @@ header a:active {
 
 .course-item {
     color: #482823;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .course-item li {
@@ -172,7 +172,7 @@ header a:active {
     padding: 25px;
     display: flex;
     justify-content: center;
-    font-size: 22px;
+    font-size: 16px;
 }
 
 .project-header {
@@ -191,6 +191,7 @@ header a:active {
     padding: 10px;
     border: solid;
     border-color: #482823;
+    font-size: 18px;
 }
 
 .download-button:hover {
