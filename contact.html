@@ -35,7 +35,7 @@
             <h2>Leave your Contact Information</h2>
         </div>
         <div class="form-content">
-            <form id="contactForm" action="/submit-form" method="post">
+            <form id="contactForm">
                 <div class="mb-3">
                     <label for="formName" class="form-label">Name</label>
                     <input type="text" class="form-control" id="formName" name="name"> 
@@ -98,8 +98,19 @@
                 console.log("Email: " + email);
                 console.log("Occupation: " + occupation);
 
-                this.reset();
-                document.getElementById('customOccupation').style.display = 'none';
+                /**
+                var client_info = name + ", " + email + ", " + occupation;
+                fs.writeFile('contactInfo.txt', client_info, err => {
+                    if (err) {
+                        console.error('Failed to write to file', err);
+                    } else {
+                        console.log('Contact info saved successfully');
+                    }
+                })
+                **/
+
+                // this.reset();
+                // document.getElementById('customOccupation').style.display = 'none';
             })
         </script>
         
