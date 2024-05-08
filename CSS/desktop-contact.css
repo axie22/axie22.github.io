@@ -4,14 +4,22 @@ h1, h2, h3, p {
     font-family: "Space Grotesk", sans-serif;
 }
 
+h1 {
+    font-weight: 600;
+}
+
 h2 {
-    font-size: 50px;
+    font-size: 32;
     font-weight: 600;
 }
 
 h3 {
-    font-size: 26px;
+    font-size: 26;
     font-weight: 400;
+}
+
+p {
+    font-size: 18px;
 }
 
 body {
@@ -23,11 +31,6 @@ html, body {
     width: 100%;
     overflow-x: hidden;
     max-width: 100%; 
-    background-image: url('background.jpg');
-    background-size: cover;
-    overflow-x: hidden;
-    min-width: 480px; 
-    min-height: 700px; 
 }
 
 header {
@@ -37,7 +40,8 @@ header {
     background-color: #C1C0B6;
     display: flex;
     align-items: center;
-    font-size: 18px;
+    font-size: 14px;
+    border-bottom: 1px solid black;
 }
 
 nav {
@@ -46,8 +50,6 @@ nav {
     justify-content: flex-end;
     gap: 40px;
     flex-grow: 1; 
-    font-size: 13px;
-    font-family: "Space Grotesk", sans-serif;
 }
 
 a {
@@ -57,50 +59,45 @@ a {
 }
 
 a:hover {
-    font-size: 110%;
+    font-size: 120%;
 } 
 
 a:active {
     color: #515050;
 }
 
-.header-name {
-    font-size: 15px;
+.top-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
     margin-left: 30px;
 }
 
-.main-content {
+.form-description {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 40px;
-    padding-top: 90px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 90px;
 }
 
-.description {
-    width: 400px;
-    font-size: 20px;
+.form-content {
+    display: flex;
+    margin-top: 30px;
+    width: 100%;
+    justify-content: center;
 }
 
-.self-description,
-.Role {
-    position: absolute;
-    color: white;
+.form-select {
+    margin-top: 0;
 }
 
-.self-description {
-    right: 30px;
-    bottom: 70px;
+form {
+    min-width: 350px;
 }
 
-.Role {
-    left: 30px;
-    font-size: 40px;
-    width: 600px;
-    bottom: 30px;
+.btn-primary {
+    margin-top: 20px;
+    border: none;
+    background-color: rgb(69, 55, 44);
 }
-
-.name {
-    font-size: 32px;
-}
-
