@@ -25,7 +25,9 @@ html, body {
     max-width: 100%; 
     background-image: url('background.jpg');
     background-size: cover;
-    
+    overflow-x: hidden;
+    min-width: 480px; 
+    min-height: 700px; 
 }
 
 header {

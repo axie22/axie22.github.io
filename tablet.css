@@ -1,1 +1,41 @@
 @import "desktop.css";
+
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    column-gap: 50px;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.role, .self-description {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.self-description {
+    flex-direction: column;
+    column-gap: 25px;
+    margin: auto;
+}
+
+nav {
+    gap: 10px;
+}
+
+header {
+    overflow: hidden;
+}
+
+.Role {
+    bottom: 50%; 
+}
+.self-description {
+    top: 50%; 
+}

@@ -1,0 +1,12 @@
+@import "desktop-resume.css";
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.resume-item {
+    margin-top: 15px;
+    border-top: solid 1px;
+}
