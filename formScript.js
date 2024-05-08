@@ -1,3 +1,14 @@
+function toggleCustomInput() {
+    var select = document.getElementById('occupationSelect');
+    var customInput = document.getElementById('customOccupation');
+
+    if (select.value === 'other') {
+        customInput.style.display = 'block'; 
+    } else {
+        customInput.style.display = 'none'; 
+    }
+}
+
 $(document).ready(function() {
     $('input').focus(function() {
         $(this).css('background', '#999999');
@@ -6,17 +17,6 @@ $(document).ready(function() {
     $('input').blur(function() {
         $(this).css('background', 'white');
     });
-
-    function toggleCustomInput() {
-        var select = document.getElementById('occupationSelect');
-        var customInput = document.getElementById('customOccupation');
-
-        if (select.value === 'other') {
-            customInput.style.display = 'block'; 
-        } else {
-            customInput.style.display = 'none'; 
-        }
-    }
 
     function handleFormSubmit() {
         var select = document.getElementById('occupationSelect');
