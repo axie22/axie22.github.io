@@ -139,4 +139,28 @@ export const resumeData = {
       "IBM Accelerate Software Developer",
     ],
   },
+  aboutPage: {
+    title: "Exploring the systems infrastructure that makes machine learning reliable at scale.",
+    bio: [
+      "I'm a Software Engineer and dual major in Computer Science and Data Science at New York University. I enjoy building scalable systems, from backend services and data pipelines to AI agents that operate in real time.",
+      "My work is driven by a curiosity for how systems behave at scale and how strong infrastructure unlocks reliable machine learning applications. I’m most excited by problems that sit between systems engineering and applied ML—where clean data meets performant code.",
+    ],
+    philosophy: [
+      {
+        title: "Scalable Systems",
+        description:
+          "I'm constantly learning what it takes to build systems that endure. At Amazon, I saw firsthand how critical automation is for scale, effectively reducing configuration times by 93% to help hundreds of developers move faster.",
+      },
+      {
+        title: "ML Infrastructure",
+        description:
+          "I'm interested in the silent infrastructure that powers intelligence. My work at ColAI taught me that optimizing ETL pipelines is just as crucial as the model itself—cutting runtimes in half to unlock faster iteration.",
+      },
+      {
+        title: "Real-Time Intelligence",
+        description:
+          "I'm exploring the intersection of latency and intelligence. Working on Orbit pushed me to understand the complexities of stitching together LLMs and voice streams to create truly interactive, real-time experiences.",
+      },
+    ],
+  },
 };
