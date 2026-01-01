@@ -1,7 +1,7 @@
 export const resumeData = {
   personalInfo: {
     name: "Alexander Xie",
-    role: "Software Engineer", // Inferred from context
+    role: "Software Engineer",
     contact: {
       phone: "626-497-9187",
       email: "alexxie9667@gmail.com",
@@ -14,7 +14,7 @@ export const resumeData = {
     {
       school: "New York University",
       degree: "Dual Major in Computer Science and Data Science",
-      date: "Aug 2022 – May 2026",
+      date: "Aug 2022 - May 2026",
       gpa: "3.7/4.0",
       coursework:
         "LLMS, Software Engineering, ML, Algorithms, Data Management, OS, Causal Inference",
@@ -47,7 +47,7 @@ export const resumeData = {
       company: "New York University",
       role: "Student Computer Technician and Developer",
       location: "New York, NY",
-      date: "Feb 2024 – Present",
+      date: "Feb 2024 - Present",
       points: [
         "Automated security configuration enforcement in Bash across 700+ systems, reducing misconfigurations by 45%",
         "Built monitoring workflows for network reliability, enabling early detection of failure and cutting downtime by 30%",
@@ -76,7 +76,7 @@ export const resumeData = {
         "Vertex AI (Gemini)",
         "Docker",
       ],
-      date: "Sept 2025 – Present",
+      date: "Sept 2025 - Present",
       points: [
         "Built a real-time AI tech interviewer using LiveKit for low-latency audio streaming and session orchestration",
         "Designed an end-to-end STT -> LLM -> TTS pipeline using Vertex AI and ElevenLabs for real-time voice feedback",
@@ -92,7 +92,7 @@ export const resumeData = {
         "Retrieval-Augmented Generation",
         "API Design",
       ],
-      date: "Aug 2025 – Present",
+      date: "Aug 2025 - Present",
       points: [
         "Led 15+ customer discovery interviews with pharma and biotech teams to understand regulatory pain points",
         "Leading AI and infra roadmap for a regulatory intelligence platform serving insights from 1,000+ FDA documents",
@@ -102,7 +102,7 @@ export const resumeData = {
     {
       title: "ASLingo",
       techStack: ["Python", "TensorFlow", "MediaPipe", "OpenCV"],
-      date: "Feb 2025 – Aug 2025",
+      date: "Feb 2025 - Aug 2025",
       points: [
         "Developed a Minecraft server plugin to entertain kids during free time for a previous job",
         "Published plugin to websites gaining 2K+ downloads and an average 4.5/5-star review",
@@ -143,7 +143,7 @@ export const resumeData = {
     title: "Exploring the systems infrastructure that makes machine learning reliable at scale.",
     bio: [
       "I'm a Software Engineer and dual major in Computer Science and Data Science at New York University. I enjoy building scalable systems, from backend services and data pipelines to AI agents that operate in real time.",
-      "My work is driven by a curiosity for how systems behave at scale and how strong infrastructure unlocks reliable machine learning applications. I’m most excited by problems that sit between systems engineering and applied ML—where clean data meets performant code.",
+      "My work is driven by a curiosity for how systems behave at scale and how strong infrastructure unlocks reliable machine learning applications. I'm most excited by problems that sit between systems engineering and applied ML, where clean data meets performant code.",
     ],
     philosophy: [
       {
