@@ -5,6 +5,7 @@ import { resumeData } from "@/data/resume";
 import { Github, Linkedin, FileText, Mail } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { motion } from "framer-motion";
+import { Typewriter } from "@/components/ui/Typewriter";
 
 export const Hero = () => {
   return (
@@ -15,9 +16,9 @@ export const Hero = () => {
         </h1>
       </FadeIn>
       <FadeIn delay={0.2}>
-        <h2 className="text-2xl font-semibold text-muted-foreground">
-          {resumeData.personalInfo.role}
-        </h2>
+        <div className="text-2xl font-semibold text-muted-foreground h-8 flex items-center">
+            <Typewriter text={resumeData.personalInfo.role} />
+        </div>
       </FadeIn>
       <FadeIn delay={0.3}>
         <p className="text-xl text-muted-foreground leading-relaxed max-w-[600px]">
