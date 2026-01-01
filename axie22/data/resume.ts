@@ -8,7 +8,7 @@ export const resumeData = {
       linkedin: "https://linkedin.com/in/alexanderxie04",
       github: "https://github.com/axie22",
     },
-    bio: "Software Engineer with a dual major in Computer Science and Data Science from NYU. Experienced in building scalable systems, AI agents, and data pipelines. Passionate about solving complex problems in systems and ML infra.",
+    bio: "Software Engineer with a dual major in Computer Science and Data Science from NYU. Interested in building scalable systems, AI agents, and data pipelines. Passionate about solving complex problems in systems and ML infra.",
   },
   education: [
     {
