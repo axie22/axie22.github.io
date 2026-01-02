@@ -1,14 +1,13 @@
 export const resumeData = {
   personalInfo: {
     name: "Alexander Xie",
-    role: "Software Engineer",
+    role: "Student and Software Engineer",
     contact: {
-      phone: "626-497-9187",
       email: "alexxie9667@gmail.com",
       linkedin: "https://linkedin.com/in/alexanderxie04",
       github: "https://github.com/axie22",
     },
-    bio: "Software Engineer with a dual major in Computer Science and Data Science from NYU. Interested in building scalable systems, AI agents, and data pipelines. Passionate about solving complex problems in systems and ML infra.",
+    bio: "Senior at NYU studying Computer Science and Data Science. Enjoy building systems and infrastructure that people depend on and can benefit from. Passionate about solving complex problems in systems and ML infra.",
   },
   education: [
     {
@@ -147,19 +146,19 @@ export const resumeData = {
     ],
     philosophy: [
       {
-        title: "Scalable Systems",
+        title: "Systems Under Real-World Constraints",
         description:
-          "I'm constantly learning what it takes to build systems that endure. At Amazon, I saw firsthand how critical automation is for scale, effectively reducing configuration times by 93% to help hundreds of developers move faster.",
+          "I'm drawn to learning systems that operate under physical and timing constraints, where decisions must be made quickly and imperfectly. My current work focuses on low-latency applications and distributed systems, and I'm increasingly curious about how similar constraints appear in robotics and embodied systems.",
       },
       {
         title: "ML Infrastructure",
         description:
-          "I'm interested in the silent infrastructure that powers intelligence. My work at ColAI taught me that optimizing ETL pipelines is just as crucial as the model itself—cutting runtimes in half to unlock faster iteration.",
+          "I'm interested in the engineering work that supports machine learning systems beyond the model itself. At Amazon, I worked on automating and hardening configuration workflows that supported ML-backed services, reducing setup time by 93% and removing operational bottlenecks for teams deploying at scale.",
       },
       {
-        title: "Real-Time Intelligence",
+        title: "Human-Centered Interactive Systems",
         description:
-          "I'm exploring the intersection of latency and intelligence. Working on Orbit pushed me to understand the complexities of stitching together LLMs and voice streams to create truly interactive, real-time experiences.",
+          "I care about building software that responds to people's needs. While working on Orbit, I designed systems that coordinate speech recognition, language models, and audio playback under tight latency constraints, so users receive feedback that feels timely and usable rather than delayed or fragmented.",
       },
     ],
   },
