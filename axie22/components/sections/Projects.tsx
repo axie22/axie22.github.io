@@ -38,12 +38,12 @@ export const Projects = () => {
               <SpotlightCard className="flex flex-col h-full bg-card/30 border-muted/20 backdrop-blur-xl hover:border-primary/20 transition-colors p-0 overflow-hidden">
                 {/* Image Section */}
                 { (project as any).image && (
-                   <div className="relative w-full aspect-video border-b border-muted/20 overflow-hidden">
+                   <div className="relative w-full aspect-[16/10] border-b border-muted/20 overflow-hidden">
                        <Image 
                          src={(project as any).image} 
                          alt={project.title}
                          fill
-                         className="object-cover transition-transform duration-500 group-hover:scale-105"
+                         className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                        />
                    </div>
                 )}
