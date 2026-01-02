@@ -80,6 +80,7 @@ export const resumeData = {
         "Docker",
       ],
       date: "Sept 2025 - Present",
+      link: "https://orbit-app-mt7to.ondigitalocean.app/",
       points: [
         "Built a real-time AI tech interviewer using LiveKit for low-latency audio streaming and session orchestration",
         "Designed an end-to-end STT -> LLM -> TTS pipeline using Vertex AI and ElevenLabs for real-time voice feedback",
@@ -96,6 +97,7 @@ export const resumeData = {
         "API Design",
       ],
       date: "Aug 2025 - Present",
+      link: "https://turtl-bio-p8aqj.ondigitalocean.app/",
       points: [
         "Led 15+ customer discovery interviews with pharma and biotech teams to understand regulatory pain points",
         "Leading AI and infra roadmap for a regulatory intelligence platform serving insights from 1,000+ FDA documents",
