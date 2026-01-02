@@ -25,6 +25,7 @@ export const resumeData = {
       role: "Software Development Engineer Intern",
       location: "Boston, MA",
       date: "Jun 2025 - Aug 2025",
+      logo: "/amazon.png",
       points: [
         "Built a Bedrock AI agent that automated config generation, reducing creation time by 93% for 400+ developers",
         "Engineered a data pipeline using Lambda, DDB, and OpenSearch to auto validate and process 3K+ configs per day",
@@ -37,6 +38,7 @@ export const resumeData = {
       role: "Machine Learning Research Intern",
       location: "Remote",
       date: "Jul 2024 - Dec 2024",
+      logo: null, // Will use initials
       points: [
         "Automated ETL pipelines for ingest, cleaning, and feature engineering in PyTorch, cutting runtime by 50%",
         "Developed transformer forecasting pipeline across 30 datasets, improving accuracy 18% and anomaly detection 22%",
@@ -47,6 +49,7 @@ export const resumeData = {
       role: "Student Computer Technician and Developer",
       location: "New York, NY",
       date: "Feb 2024 - Present",
+      logo: "/nyu.png",
       points: [
         "Automated security configuration enforcement in Bash across 700+ systems, reducing misconfigurations by 45%",
         "Built monitoring workflows for network reliability, enabling early detection of failure and cutting downtime by 30%",
@@ -58,6 +61,7 @@ export const resumeData = {
       role: "Software Application Intern",
       location: "Sunnyvale, CA",
       date: "Jun 2023 - Aug 2023",
+      logo: "/fortinet.png",
       points: [
         "Detected and remediated 400+ vulnerabilities, preventing XSS, SQL injection, and privilege-escalation attacks",
         "Reproduced 150+ suspected flaws in sandbox environment to verify exploitability and confirm patch success",
@@ -134,8 +138,16 @@ export const resumeData = {
       "Redis",
     ],
     certifications: [
-      "AWS Certified Cloud Practitioner",
-      "IBM Accelerate Software Developer",
+      {
+        name: "AWS Certified Cloud Practitioner",
+        image: "/AWS_CCP.png",
+        link: "https://www.credly.com/earner/earned/badge/c7405f9d-927b-402f-b089-e96e91d7c3bf",
+      },
+      {
+        name: "IBM Accelerate Software Developer",
+        image: "/IBM_Accelerate.png",
+        link: "https://www.credly.com/earner/earned/badge/a6c826a1-7fb7-41e3-bf99-6dd28a9c6df6",
+      },
     ],
   },
   aboutPage: {
