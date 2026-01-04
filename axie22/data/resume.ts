@@ -145,12 +145,12 @@ export const resumeData = {
       {
         name: "AWS Certified Cloud Practitioner",
         image: "/AWS_CCP.png",
-        link: "https://www.credly.com/earner/earned/badge/c7405f9d-927b-402f-b089-e96e91d7c3bf",
+        link: "https://www.credly.com/badges/c7405f9d-927b-402f-b089-e96e91d7c3bf/public_url",
       },
       {
         name: "IBM Accelerate Software Developer",
         image: "/IBM_Accelerate.png",
-        link: "https://www.credly.com/earner/earned/badge/a6c826a1-7fb7-41e3-bf99-6dd28a9c6df6",
+        link: "https://www.credly.com/badges/a6c826a1-7fb7-41e3-bf99-6dd28a9c6df6/public_url",
       },
     ],
   },
