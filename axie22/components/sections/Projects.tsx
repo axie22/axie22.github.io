@@ -23,7 +23,7 @@ export const Projects = () => {
         <div className="flex flex-col gap-4">
             <h2 className="text-4xl font-bold tracking-tight">Featured Projects</h2>
             <p className="text-muted-foreground text-lg max-w-2xl">
-                A selection of systems and applications I've engineered, focusing on scalability, real-time interactions, and machine learning infrastructure.
+                A selection of systems and applications that I've been working on recently.
             </p>
         </div>
       </FadeIn>

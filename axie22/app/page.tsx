@@ -12,13 +12,13 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Hero />
         <Separator className="my-8" />
-        <Skills />
-        <Separator className="my-8" />
-        <Education />
-        <Separator className="my-8" />
         <Experience />
         <Separator className="my-8" />
         <Projects />
+        <Separator className="my-8" />
+        <Education />
+        <Separator className="my-8" />
+        <Skills />
         <Separator className="my-8" />
         <GitHubStats />
         
