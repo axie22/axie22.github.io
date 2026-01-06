@@ -16,7 +16,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Alexander Xie | Software Engineer",
-  description: "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+  description:
+    "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+  metadataBase: new URL("https://axie22.github.io"),
+  openGraph: {
+    title: "Alexander Xie | Software Engineer",
+    description:
+      "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+    url: "https://axie22.github.io",
+    siteName: "Alexander Xie",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Alexander Xie | Software Engineer",
+    description:
+      "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+  },
 };
 
 export default function RootLayout({
