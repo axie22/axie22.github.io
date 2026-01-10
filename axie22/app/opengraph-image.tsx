@@ -119,30 +119,52 @@ export default async function Image() {
               <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#22c55e" }}></div>
             </div>
             
-            {/* Code Content */}
-            <pre
+            <div
               style={{
                 fontFamily: "monospace",
                 fontSize: 20,
                 lineHeight: 1.5,
-                margin: 0,
-                whiteSpace: "pre-wrap",
+                display: "flex",
+                flexDirection: "column",
                 color: "#e2e8f0",
               }}
             >
-              {`{
-  "name": `}<span style={{ color: "#7dd3fc" }}>"Alexander Xie"</span>{`,
-  "education": {
-    "school": `}<span style={{ color: "#7dd3fc" }}>"NYU"</span>{`
-  },
-  "skills": [
-    `}<span style={{ color: "#fca5a5" }}>"Systems"</span>{`,
-    `}<span style={{ color: "#fca5a5" }}>"ML Infra"</span>{`,
-    `}<span style={{ color: "#fca5a5" }}>"Web"</span>{`
-  ],
-  "status": `}<span style={{ color: "#86efac" }}>"Building"</span>{`
-}`}
-            </pre>
+              <div style={{ display: "flex" }}>{"{"}</div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;"name":&nbsp;</span>
+                <span style={{ color: "#7dd3fc" }}>"Alexander Xie"</span>
+                <span>,</span>
+              </div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;"education": {"{"}</span>
+              </div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;"school":&nbsp;</span>
+                <span style={{ color: "#7dd3fc" }}>"NYU"</span>
+              </div>
+              <div style={{ display: "flex" }}>&nbsp;&nbsp;{"},"}</div>
+              <div style={{ display: "flex" }}>&nbsp;&nbsp;"skills": [</div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span style={{ color: "#fca5a5" }}>"Systems"</span>
+                <span>,</span>
+              </div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span style={{ color: "#fca5a5" }}>"ML Infra"</span>
+                <span>,</span>
+              </div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span style={{ color: "#fca5a5" }}>"Full Stack"</span>
+              </div>
+              <div style={{ display: "flex" }}>&nbsp;&nbsp;],</div>
+              <div style={{ display: "flex" }}>
+                <span>&nbsp;&nbsp;"status":&nbsp;</span>
+                <span style={{ color: "#86efac" }}>"Building"</span>
+              </div>
+              <div style={{ display: "flex" }}>{"}"}</div>
+            </div>
           </div>
         </div>
       </div>
