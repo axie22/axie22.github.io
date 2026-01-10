@@ -12,11 +12,7 @@ export const size = {
 
 export const contentType = "image/png";
 
-// Image generation
 export default async function Image() {
-  // Font data would typically be loaded here if we were using custom fonts,
-  // but for simplicity and reliability with static export, we'll use system fonts
-  // or a default sans-serif for now.
 
   const jsonCode = `{
   "name": "Alexander Xie",
