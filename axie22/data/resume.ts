@@ -80,7 +80,7 @@ export const resumeData = {
         "Docker",
       ],
       date: "Sept 2025 - Present",
-      link: "https://orbit-app-mt7to.ondigitalocean.app/",
+      link: "https://orbit-mmos8.ondigitalocean.app/",
       image: "/Orbit.png",
       points: [
         "Built a real-time AI tech interviewer using LiveKit for low-latency audio streaming and session orchestration",
@@ -155,7 +155,8 @@ export const resumeData = {
     ],
   },
   aboutPage: {
-    title: "Exploring the systems infrastructure that makes machine learning reliable at scale.",
+    title:
+      "Exploring the systems infrastructure that makes machine learning reliable at scale.",
     bio: [
       "I'm a Senior at NYU graduating with a dual major in Computer Science and Data Science. I enjoy building systems and tools that help people, with a focus on machine learning and its applications.",
       "My work is driven by a curiosity for how systems behave at scale and how strong infrastructure unlocks reliable machine learning applications. I'm most excited by problems that sit between systems engineering and applied ML.",
