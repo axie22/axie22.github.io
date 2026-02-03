@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     description:
       "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
   },
+  verification: {
+    google: "fQzxQkZJzGy2y9TAchYQMZrlaGC9nbFGyXAWutO01B4",
+  },
 };
 
 export default function RootLayout({
