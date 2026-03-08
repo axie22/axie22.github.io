@@ -12,9 +12,9 @@ import { FadeIn } from "@/components/animations/FadeIn";
 
 export const Education = () => {
   return (
-    <section id="education" className="py-12 space-y-8">
+    <section id="education" className="py-16 space-y-8">
       <FadeIn>
-        <h2 className="text-3xl font-bold tracking-tight mb-6">Education</h2>
+        <h2 className="text-4xl font-bold tracking-tight">Education</h2>
       </FadeIn>
       <div className="space-y-6">
         {resumeData.education.map((edu, index) => (

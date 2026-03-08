@@ -8,14 +8,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { resumeData } from "@/data/resume";
 import { FadeIn } from "@/components/animations/FadeIn";
 
 export const Experience = () => {
   return (
-    <section id="experience" className="py-12 space-y-8">
+    <section id="experience" className="py-16 space-y-8">
       <FadeIn>
-        <h2 className="text-3xl font-bold tracking-tight mb-6">Experience</h2>
+        <h2 className="text-4xl font-bold tracking-tight">Experience</h2>
       </FadeIn>
       <div className="space-y-6">
         {resumeData.experience.map((job, index) => (
@@ -40,6 +41,17 @@ export const Experience = () => {
                   <div className="text-sm text-muted-foreground bg-secondary/50 px-3 py-1 rounded-full font-mono whitespace-nowrap">
                     {job.date}
                   </div>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {job.techStack.map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="secondary"
+                      className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-medium bg-primary/10 text-primary border-primary/10 shadow-none"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
                 </div>
               </CardHeader>
               <CardContent>

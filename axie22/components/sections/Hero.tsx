@@ -68,27 +68,27 @@ export const Hero = () => {
 
       <div className="flex-1 w-full max-w-[500px] hidden lg:block">
         <FadeIn delay={0.5}>
-            <CodeWindow className="w-full">
+            <CodeWindow className="w-full" title="~/.profile">
                 <pre className="text-xs leading-relaxed">
                     <code>
-{`{
-  "name": "${resumeData.personalInfo.name}",
-  "role": "${resumeData.personalInfo.role}",
-  "location": "New York, NY",
-  "education": {
-    "school": "NYU",
-    "major": "CS & Data Science",
-    "graduation": "2026"
-  },
-  "skills": [
-    "System Architecture",
-    "Machine Learning", 
-    "Full Stack Dev",
-    "Cloud Infrastructure"
-  ],
-  "current_focus": "Building tools that help people",
-  "status": "Open to new opportunities"
-}`}
+{`alex@nyc:~$ whoami
+Alexander Xie · Software Engineer
+
+alex@nyc:~$ cat bio.txt
+Senior at NYU · CS + Data Science · 2026
+Building systems and tools people depend on.
+
+alex@nyc:~$ ls experience/
+amazon/   colai/   fortinet/   nyu/
+
+alex@nyc:~$ git log --oneline
+shipped Orbit — real-time AI interviewer
+interned @ Amazon — 93% faster config setup
+ML research @ ColAI — 50% ETL runtime cut
+patched 400+ vulns @ Fortinet
+
+alex@nyc:~$ echo $STATUS
+open to new opportunities`}
                     </code>
                 </pre>
             </CodeWindow>
