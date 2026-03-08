@@ -10,10 +10,10 @@ export const GitHubStats = () => {
     const githubUsername = resumeData.personalInfo.contact.github.split("/").pop();
 
   return (
-    <section id="github" className="py-12 space-y-8">
+    <section id="github" className="py-16 space-y-8">
       <FadeIn>
         <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold tracking-tight">GitHub Activity</h2>
+            <h2 className="text-4xl font-bold tracking-tight">GitHub Activity</h2>
             <Button variant="outline" size="sm" asChild>
                 <a href={resumeData.personalInfo.contact.github} target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 h-4 w-4" />
@@ -31,9 +31,12 @@ export const GitHubStats = () => {
                     We use a generic color scheme or text color to try match theme, 
                     but the default green is usually fine/recognizable for GitHub.
                 */}
-                <img 
-                    src={`https://ghchart.rshah.org/${githubUsername}`} 
-                    alt="GitHub Contribution Graph" 
+                <img
+                    src={`https://ghchart.rshah.org/${githubUsername}`}
+                    alt="GitHub contribution graph"
+                    width={900}
+                    height={120}
+                    loading="lazy"
                     className="w-full min-w-[700px]"
                 />
             </div>

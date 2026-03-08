@@ -68,27 +68,28 @@ export const Hero = () => {
 
       <div className="flex-1 w-full max-w-[500px] hidden lg:block">
         <FadeIn delay={0.5}>
-            <CodeWindow className="w-full">
+            <CodeWindow className="w-full" title="chip8/cpu.hpp">
                 <pre className="text-xs leading-relaxed">
                     <code>
-{`{
-  "name": "${resumeData.personalInfo.name}",
-  "role": "${resumeData.personalInfo.role}",
-  "location": "New York, NY",
-  "education": {
-    "school": "NYU",
-    "major": "CS & Data Science",
-    "graduation": "2026"
-  },
-  "skills": [
-    "System Architecture",
-    "Machine Learning", 
-    "Full Stack Dev",
-    "Cloud Infrastructure"
-  ],
-  "current_focus": "Building tools that help people",
-  "status": "Open to new opportunities"
-}`}
+{`// Chip-8 interpreter — cpu.hpp
+struct CPU {
+  uint8_t  V[16];      // V0–VF registers
+  uint16_t I  = 0;     // index register
+  uint16_t PC = 0x200; // program counter
+  uint8_t  SP = 0;     // stack pointer
+  uint8_t  DT = 0;     // delay timer
+  uint8_t  ST = 0;     // sound timer
+
+  uint8_t  mem[4096];  // 4 KB addressable RAM
+  uint16_t stack[16];
+  uint64_t display[32];// 64×32 bit-packed fb
+
+  void cycle();
+  void execute(uint16_t opcode);
+};
+
+// 35 opcodes · 60 Hz display · sound timer
+// SDL2 renderer · configurable scale factor`}
                     </code>
                 </pre>
             </CodeWindow>

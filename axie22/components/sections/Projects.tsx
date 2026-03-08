@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { resumeData } from "@/data/resume";
+import { resumeData, type Project } from "@/data/resume";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { motion } from "framer-motion";
 import { ExternalLink, ArrowRight, Github, ChevronLeft, ChevronRight } from "lucide-react";
@@ -46,6 +46,7 @@ export const Projects = () => {
               size="icon"
               onClick={() => scroll("left")}
               className="rounded-full hover:bg-muted"
+              aria-label="Scroll projects left"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -54,24 +55,23 @@ export const Projects = () => {
               size="icon"
               onClick={() => scroll("right")}
               className="rounded-full hover:bg-muted"
+              aria-label="Scroll projects right"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </FadeIn>
-      
-      {/* Carousel Container */}
+
       <div className="relative w-full">
-        {/* Scroll Area */}
-        <div 
+        <div
           ref={scrollRef}
           className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory"
         >
           <div className="flex gap-6 w-max">
-            {resumeData.projects.map((project, index) => (
-              <div 
-                key={index} 
+            {resumeData.projects.map((project: Project, index: number) => (
+              <div
+                key={index}
                 className="w-[85vw] md:w-[350px] shrink-0 snap-center"
               >
                 <FadeIn delay={index * 0.1}>
@@ -81,11 +81,10 @@ export const Projects = () => {
                     className="h-full"
                   >
                     <SpotlightCard className="flex flex-col h-full bg-card/30 border-muted/20 backdrop-blur-xl hover:border-primary/20 transition-colors p-0 overflow-hidden group">
-                      {/* Image Section */}
-                      { (project as any).image ? (
+                      {project.image ? (
                          <div className="relative w-full aspect-[2/1] border-b border-muted/20 overflow-hidden">
-                             <Image 
-                               src={(project as any).image} 
+                             <Image
+                               src={project.image}
                                alt={project.title}
                                fill
                                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
@@ -109,16 +108,26 @@ export const Projects = () => {
                                   </p>
                               </div>
                               <div className="flex gap-1">
-                                { (project as any).github && (
+                                {project.github && (
                                     <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
-                                        <Link href={(project as any).github} target="_blank" rel="noopener noreferrer">
+                                        <Link
+                                          href={project.github}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          aria-label={`View ${project.title} on GitHub`}
+                                        >
                                             <Github className="h-4 w-4" />
                                         </Link>
                                     </Button>
                                 )}
-                                { (project as any).link && (
+                                {project.link && (
                                     <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
-                                        <Link href={(project as any).link} target="_blank" rel="noopener noreferrer">
+                                        <Link
+                                          href={project.link}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          aria-label={`View ${project.title} live deployment`}
+                                        >
                                             <ExternalLink className="h-4 w-4" />
                                         </Link>
                                     </Button>
@@ -127,9 +136,9 @@ export const Projects = () => {
                           </div>
                           <div className="flex flex-wrap gap-2">
                               {project.techStack.map((tech) => (
-                              <Badge 
-                                  key={tech} 
-                                  variant="secondary" 
+                              <Badge
+                                  key={tech}
+                                  variant="secondary"
                                   className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/10 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-none font-medium transition-colors"
                               >
                                   {tech}
@@ -147,11 +156,10 @@ export const Projects = () => {
                               ))}
                           </div>
                           </CardContent>
-                          {/* Optional Footer Action */}
-                          { (project as any).link && (
+                          {project.link && (
                               <CardFooter className="p-0 pt-4 mt-auto">
-                                  <Button asChild variant="link" className="p-0 h-auto font-semibold text-primary group-hover:underline-offset-4 decoration-primary/30" >
-                                      <Link href={(project as any).link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm">
+                                  <Button asChild variant="link" className="p-0 h-auto font-semibold text-primary group-hover:underline-offset-4 decoration-primary/30">
+                                      <Link href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm">
                                           View Deployment <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                                       </Link>
                                   </Button>

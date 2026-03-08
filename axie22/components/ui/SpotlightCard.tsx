@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,23 +16,33 @@ export const SpotlightCard = ({
   ...props
 }: SpotlightCardProps) => {
   const divRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current) return;
-
+    if (!divRef.current || !spotlightRef.current) return;
+    cancelAnimationFrame(rafRef.current);
     const rect = divRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    rafRef.current = requestAnimationFrame(() => {
+      if (spotlightRef.current) {
+        spotlightRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${spotlightColor}, transparent 40%)`;
+      }
+    });
   };
 
   const handleMouseEnter = () => {
-    setOpacity(1);
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "1";
   };
 
   const handleMouseLeave = () => {
-    setOpacity(0);
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
   };
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   return (
     <div
@@ -47,11 +57,9 @@ export const SpotlightCard = ({
       {...props}
     >
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
-        style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
-        }}
+        ref={spotlightRef}
+        className="pointer-events-none absolute -inset-px transition-opacity duration-300"
+        style={{ opacity: 0 }}
       />
       <div className="relative h-full">{children}</div>
     </div>

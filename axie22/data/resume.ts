@@ -1,13 +1,33 @@
+export interface Project {
+  title: string;
+  techStack: string[];
+  date: string;
+  points: string[];
+  github?: string;
+  link?: string;
+  image?: string;
+}
+
+export interface ExperienceEntry {
+  company: string;
+  role: string;
+  location: string;
+  date: string;
+  logo: string | null;
+  techStack: string[];
+  points: string[];
+}
+
 export const resumeData = {
   personalInfo: {
     name: "Alexander Xie",
-    role: "Student and Software Engineer",
+    role: "Systems & ML Engineer",
     contact: {
       email: "alexxie9667@gmail.com",
       linkedin: "https://linkedin.com/in/alexanderxie04",
       github: "https://github.com/axie22",
     },
-    bio: "Senior at NYU studying Computer Science and Data Science. Enjoy building systems and infrastructure that people depend on and can benefit from. Passionate about solving complex problems in systems and ML infra.",
+    bio: "Senior at NYU studying Computer Science and Data Science. I build systems and infrastructure that people depend on — from low-latency real-time pipelines to ML infrastructure and cloud automation.",
   },
   education: [
     {
@@ -16,7 +36,7 @@ export const resumeData = {
       date: "Aug 2022 - May 2026",
       gpa: "3.7/4.0",
       coursework:
-        "LLMS, Software Engineering, ML, Algorithms, Data Management, OS, Causal Inference",
+        "LLMs, Software Engineering, Machine Learning, Algorithms, Data Management, Operating Systems, Causal Inference",
     },
   ],
   experience: [
@@ -26,6 +46,7 @@ export const resumeData = {
       location: "Boston, MA",
       date: "Jun 2025 - Aug 2025",
       logo: "/amazon.png",
+      techStack: ["Bedrock", "Lambda", "DynamoDB", "OpenSearch", "CDK"],
       points: [
         "Built a Bedrock AI agent that automated config generation, reducing creation time by 93% for 400+ developers",
         "Engineered a data pipeline using Lambda, DDB, and OpenSearch to auto validate and process 3K+ configs per day",
@@ -38,7 +59,8 @@ export const resumeData = {
       role: "Machine Learning Research Intern",
       location: "Remote",
       date: "Jul 2024 - Dec 2024",
-      logo: null, // Will use initials
+      logo: null,
+      techStack: ["PyTorch", "Python", "Pandas", "Scikit-learn"],
       points: [
         "Automated ETL pipelines for ingest, cleaning, and feature engineering in PyTorch, cutting runtime by 50%",
         "Developed transformer forecasting pipeline across 30 datasets, improving accuracy 18% and anomaly detection 22%",
@@ -50,6 +72,7 @@ export const resumeData = {
       location: "New York, NY",
       date: "Feb 2024 - Present",
       logo: "/nyu.png",
+      techStack: ["Bash", "Linux", "Python", "Networking"],
       points: [
         "Automated security configuration enforcement in Bash across 700+ systems, reducing misconfigurations by 45%",
         "Built monitoring workflows for network reliability, enabling early detection of failure and cutting downtime by 30%",
@@ -62,13 +85,14 @@ export const resumeData = {
       location: "Sunnyvale, CA",
       date: "Jun 2023 - Aug 2023",
       logo: "/fortinet.png",
+      techStack: ["Python", "Burp Suite", "SAST", "SQL"],
       points: [
         "Detected and remediated 400+ vulnerabilities, preventing XSS, SQL injection, and privilege-escalation attacks",
         "Reproduced 150+ suspected flaws in sandbox environment to verify exploitability and confirm patch success",
         "Partnered with InfoSec to improve scanning coverage and coding patterns, increasing protected codebase by 20%",
       ],
     },
-  ],
+  ] satisfies ExperienceEntry[],
   projects: [
     {
       title: "Orbit",
@@ -85,9 +109,22 @@ export const resumeData = {
       image: "/Orbit.png",
       points: [
         "Built a real-time AI tech interviewer using LiveKit for low-latency audio streaming and session orchestration",
-        "Designed an end-to-end STT -> LLM -> TTS pipeline using Vertex AI and ElevenLabs for real-time voice feedback",
+        "Designed an end-to-end STT → LLM → TTS pipeline using Vertex AI and ElevenLabs for real-time voice feedback",
         "Implemented context-aware prompting and conversation memory to deliver structured, interview-style guidance",
         "Deployed a containerized Next.js application with a dedicated inference worker to isolate real-time LLM workloads",
+      ],
+    },
+    {
+      title: "Chip8 Emulator",
+      techStack: ["C++", "SDL2", "CMake", "Emulation"],
+      date: "Jan 2025 - Feb 2025",
+      github: "https://github.com/axie22/Chip8Emulator",
+      image: "/Chip8.png",
+      points: [
+        "Built a fully functional Chip-8 emulator in C++ implementing all 35 opcodes for accurate ROM execution",
+        "Engineered a display system using SDL2 to render a 64×32 framebuffer at 60 Hz with configurable scaling",
+        "Implemented precise CPU timing and sound timer logic to ensure authentic gameplay speed and audio feedback",
+        "Added debug tooling including register dumps and memory inspection to streamline opcode troubleshooting",
       ],
     },
     {
@@ -114,31 +151,17 @@ export const resumeData = {
       date: "Feb 2025 - Aug 2025",
       github: "https://github.com/axie22/ASLingo",
       points: [
-        "Developed a Minecraft server plugin to entertain kids during free time for a previous job",
-        "Published plugin to websites gaining 2K+ downloads and an average 4.5/5-star review",
-        "Implemented continuous delivery using TravisCI to build the plugin upon new a release",
-        "Collaborated with Minecraft server administrators to suggest features and get feedback about the plugin",
-      ],
-    },
-    {
-      title: "Chip8 Emulator",
-      techStack: ["C++", "SDL2", "Emulation", "CMake"],
-      date: "Jan 2025 - Feb 2025",
-      link: "https://github.com/axie22/Chip8Emulator",
-      image: "/Chip8.png",
-      points: [
-        "Built a fully functional Chip-8 emulator in C++ implementing all 35 opcodes for accurate ROM execution",
-        "Engineered a dynamic display system using SDL2 to render graphics at 60Hz with configurable scaling",
-        "Implemented precise CPU timing and sound timer logic to ensure authentic gameplay speed and audio feedback",
-        "Added debug features including register dumps and memory views to streamline opcode troubleshooting",
+        "Built a real-time ASL alphabet recognition system using MediaPipe Hands to extract 21 3D hand landmarks per frame",
+        "Trained a TensorFlow classifier on labeled gesture frames to recognize 26 ASL letter signs",
+        "Engineered an OpenCV video pipeline for end-to-end frame processing with low-latency inference",
+        "Implemented a live overlay displaying confidence scores and predicted sign output for interactive feedback",
       ],
     },
     {
       title: "Aura",
       techStack: ["GitHub Apps", "Gemini 1.5 Flash", "Playwright", "Next.js"],
       date: "Feb 2025 - Present",
-      link: "https://github.com/axie22/Aura",
-      // image: "/Aura.png",
+      github: "https://github.com/axie22/Aura",
       points: [
         "Developed a GitHub App that automatically generates video walkthroughs for UI changes in Pull Requests",
         "Integrated Gemini 1.5 Flash to analyze code diffs and synthesize Playwright scripts for visual verification",
@@ -146,29 +169,29 @@ export const resumeData = {
         "Streamlined code review by embedding visual proof-of-work directly into PR comments, reducing review time",
       ],
     },
-  ],
+  ] satisfies Project[],
   skills: {
-    languages: ["Python", "Java", "Typescript", "Go", "C", "SQL", "Javascript"],
-    devTools: [
+    languages: ["C++", "Python", "TypeScript", "Go", "Java", "C", "SQL", "JavaScript"],
+    frameworks: [
+      "PyTorch",
+      "TensorFlow",
       "React",
       "Node.js",
-      "Tensorflow",
-      "PyTorch",
-      "Pandas",
-      "Scikit-learn",
       "MediaPipe",
       "OpenCV",
+      "Pandas",
+      "Scikit-learn",
       "Linux",
       "Bash",
     ],
-    cloudDevOps: [
+    infrastructure: [
       "AWS",
-      "Google Cloud",
       "Docker",
       "PostgreSQL",
+      "Google Cloud",
+      "Redis",
       "MongoDB",
       "Cloudant",
-      "Redis",
     ],
     certifications: [
       {
