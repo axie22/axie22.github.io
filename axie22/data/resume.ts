@@ -21,7 +21,7 @@ export interface ExperienceEntry {
 export const resumeData = {
   personalInfo: {
     name: "Alexander Xie",
-    role: "Systems & ML Engineer",
+    role: "Software Engineer",
     contact: {
       email: "alexxie9667@gmail.com",
       linkedin: "https://linkedin.com/in/alexanderxie04",

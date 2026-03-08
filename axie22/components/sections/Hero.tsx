@@ -68,28 +68,27 @@ export const Hero = () => {
 
       <div className="flex-1 w-full max-w-[500px] hidden lg:block">
         <FadeIn delay={0.5}>
-            <CodeWindow className="w-full" title="chip8/cpu.hpp">
+            <CodeWindow className="w-full" title="~/.profile">
                 <pre className="text-xs leading-relaxed">
                     <code>
-{`// Chip-8 interpreter — cpu.hpp
-struct CPU {
-  uint8_t  V[16];      // V0–VF registers
-  uint16_t I  = 0;     // index register
-  uint16_t PC = 0x200; // program counter
-  uint8_t  SP = 0;     // stack pointer
-  uint8_t  DT = 0;     // delay timer
-  uint8_t  ST = 0;     // sound timer
+{`alex@nyc:~$ whoami
+Alexander Xie · Software Engineer
 
-  uint8_t  mem[4096];  // 4 KB addressable RAM
-  uint16_t stack[16];
-  uint64_t display[32];// 64×32 bit-packed fb
+alex@nyc:~$ cat bio.txt
+Senior at NYU · CS + Data Science · 2026
+Building systems and tools people depend on.
 
-  void cycle();
-  void execute(uint16_t opcode);
-};
+alex@nyc:~$ ls experience/
+amazon/   colai/   fortinet/   nyu/
 
-// 35 opcodes · 60 Hz display · sound timer
-// SDL2 renderer · configurable scale factor`}
+alex@nyc:~$ git log --oneline
+shipped Orbit — real-time AI interviewer
+interned @ Amazon — 93% faster config setup
+ML research @ ColAI — 50% ETL runtime cut
+patched 400+ vulns @ Fortinet
+
+alex@nyc:~$ echo $STATUS
+open to new opportunities`}
                     </code>
                 </pre>
             </CodeWindow>
