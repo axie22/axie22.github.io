@@ -27,7 +27,7 @@ export const resumeData = {
       linkedin: "https://linkedin.com/in/alexanderxie04",
       github: "https://github.com/axie22",
     },
-    bio: "Senior at NYU studying Computer Science and Data Science. I build systems and infrastructure that people depend on — from low-latency real-time pipelines to ML infrastructure and cloud automation.",
+    bio: "Senior at NYU studying Computer Science and Data Science. Building the systems and infrastructure that people depend on.",
   },
   education: [
     {
@@ -171,7 +171,16 @@ export const resumeData = {
     },
   ] satisfies Project[],
   skills: {
-    languages: ["C++", "Python", "TypeScript", "Go", "Java", "C", "SQL", "JavaScript"],
+    languages: [
+      "C++",
+      "Python",
+      "TypeScript",
+      "Go",
+      "Java",
+      "C",
+      "SQL",
+      "JavaScript",
+    ],
     frameworks: [
       "PyTorch",
       "TensorFlow",
