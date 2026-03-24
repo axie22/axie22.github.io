@@ -115,43 +115,6 @@ export const resumeData = {
       ],
     },
     {
-      title: "Gauge",
-      techStack: [
-        "Next.js 16",
-        "TypeScript",
-        "Ollama",
-        "PostgreSQL",
-        "Tailwind CSS",
-      ],
-      date: "Mar 2026 - Present",
-      github: "https://github.com/axie22/Gauge",
-      points: [
-        "Built a personal training intelligence dashboard that connects to Hevy workout history and WHOOP biometric data",
-        "Engineered a full analytics pipeline with ACWR calculations, plateau detection, and session quality scoring",
-        "Implemented AI coaching powered by local Ollama models with complete training context for personalized guidance",
-        "Designed six dedicated pages covering training, recovery, nutrition, and analytics with real-time data visualization",
-      ],
-    },
-    {
-      title: "SignalFeed",
-      techStack: [
-        "Python",
-        "FastAPI",
-        "Next.js",
-        "PostgreSQL",
-        "Ollama",
-        "Docker",
-      ],
-      date: "Mar 2026 - Present",
-      github: "https://github.com/axie22/DailyNews",
-      points: [
-        "Built an ML news aggregator with scheduled scraping from arXiv, Hugging Face, RSS feeds, and X/Twitter API",
-        "Engineered a pipeline that deduplicates articles, summarizes them via local Ollama models, and stores in Postgres",
-        "Implemented APScheduler for automated 6-hour pipeline runs with cost-managed API usage and hard monthly caps",
-        "Designed a Next.js frontend styled like TLDR with filtering, tagging, and pagination for curated ML content",
-      ],
-    },
-    {
       title: "Chip8 Emulator",
       techStack: ["C++", "SDL2", "CMake", "Emulation"],
       date: "Jan 2025 - Feb 2025",
