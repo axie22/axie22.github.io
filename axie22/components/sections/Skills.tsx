@@ -120,7 +120,10 @@ export const Skills = () => {
                         className="object-contain"
                       />
                     </div>
-                    <span className="font-medium leading-tight">{cert.name}</span>
+                    <div className="min-w-0">
+                      <div className="font-medium leading-tight">{cert.name}</div>
+                      <div className="mt-1 text-sm text-muted-foreground">{cert.issuer}</div>
+                    </div>
                   </CardContent>
                 </Card>
               </Link>

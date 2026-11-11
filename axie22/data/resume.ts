@@ -323,12 +323,44 @@ export const resumeData = {
     ],
     certifications: [
       {
+        name: "Claude Certified Developer - Foundations",
+        issuer: "Anthropic",
+        image: "/certs/claude-certified-developer.svg",
+        link: "https://www.credly.com/badges/c82ff778-e886-413e-94d0-0d2ab5d38a7e/public_url",
+      },
+      {
+        name: "Open Source Contributor",
+        issuer: "IBM",
+        image: "/certs/open-source-contributor.svg",
+        link: "https://www.credly.com/badges/fe25b7f5-04f3-44f6-aeb9-1da074ff12f9/public_url",
+      },
+      {
+        name: "Trustworthy AI and AI Ethics",
+        issuer: "IBM",
+        image: "/certs/trustworthy-ai.svg",
+        link: "https://www.credly.com/badges/e01bc386-11e4-4161-954e-cde6d0258f22/public_url",
+      },
+      {
+        name: "Containers & Kubernetes Essentials",
+        issuer: "IBM",
+        image: "/certs/containers-kubernetes.svg",
+        link: "https://www.credly.com/badges/7d820027-2e0f-4730-bf84-63af6335ffca/public_url",
+      },
+      {
+        name: "IBM DevSecOps Explorer - Security & Automation for DevOps",
+        issuer: "IBM",
+        image: "/certs/devsecops-explorer.svg",
+        link: "https://www.credly.com/badges/9b29370e-7cf2-4154-ad21-85376ffa6c7a/public_url",
+      },
+      {
         name: "AWS Certified Cloud Practitioner",
+        issuer: "Amazon Web Services",
         image: "/AWS_CCP.png",
         link: "https://www.credly.com/badges/c7405f9d-927b-402f-b089-e96e91d7c3bf/public_url",
       },
       {
         name: "IBM Accelerate Software Developer",
+        issuer: "IBM",
         image: "/IBM_Accelerate.png",
         link: "https://www.credly.com/badges/a6c826a1-7fb7-41e3-bf99-6dd28a9c6df6/public_url",
       },
