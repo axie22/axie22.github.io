@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { FULL_HEADLINE } from "@/lib/forward-pass/config";
 import { Navbar } from "@/components/layout/Navbar";
 import { BackgroundBlobs } from "@/components/layout/BackgroundBlobs";
 
@@ -14,15 +15,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description = `${FULL_HEADLINE} Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.`;
+
 export const metadata: Metadata = {
   title: "Alexander Xie | Software Engineer",
   description:
-    "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+    description,
   metadataBase: new URL("https://axie22.github.io"),
   openGraph: {
     title: "Alexander Xie | Software Engineer",
     description:
-      "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+      description,
     url: "https://axie22.github.io",
     siteName: "Alexander Xie",
     locale: "en_US",
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Alexander Xie | Software Engineer",
     description:
-      "Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.",
+      description,
   },
   verification: {
     google: "fQzxQkZJzGy2y9TAchYQMZrlaGC9nbFGyXAWutO01B4",
