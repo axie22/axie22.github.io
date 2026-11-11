@@ -5,7 +5,6 @@ import { HeroController } from "./HeroController";
 const { name, contact } = resumeData.personalInfo;
 
 const links = [
-  { label: "Resume", href: "/Alexander_Xie_resume.pdf", external: true },
   { label: "GitHub", href: contact.github, external: true },
   { label: "LinkedIn", href: contact.linkedin, external: true },
   { label: "Contact", href: `mailto:${contact.email}`, external: false },

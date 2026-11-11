@@ -32,9 +32,6 @@ export const Education = () => {
                     <span className="text-sm text-muted-foreground block">
                       {edu.date}
                     </span>
-                    <span className="text-sm font-medium block">
-                      GPA: {edu.gpa}
-                    </span>
                   </div>
                 </div>
               </CardHeader>

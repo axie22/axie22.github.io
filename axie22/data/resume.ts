@@ -4,7 +4,7 @@ export interface Project {
   title: string;
   techStack: string[];
   date: string;
-  /** Full bullets (resume PDF etc.). The site shows `summary` instead. */
+  /** Full bullets, kept for reference. The site shows `summary` instead. */
   points: string[];
   github?: string;
   /** One-sentence summary used in the card header / list row. */
@@ -50,7 +50,6 @@ export const resumeData = {
       school: "New York University",
       degree: "Dual Major in Computer Science and Data Science",
       date: "Aug 2022 - May 2026",
-      gpa: "3.7/4.0",
       coursework:
         "LLMs, Software Engineering, Machine Learning, Algorithms, Data Management, Operating Systems, Causal Inference",
     },
