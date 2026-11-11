@@ -22,13 +22,15 @@ export const Experience = () => {
               <div className="flex gap-8 relative group">
                 {/* Timeline node */}
                 <div className="relative z-10 shrink-0">
-                  <Avatar className="h-12 w-12 border-2 border-border group-hover:border-primary/60 bg-background rounded-full transition-all duration-300 shadow-sm group-hover:shadow-primary/20 group-hover:shadow-md">
+                  {/* Rounded-square tile: logos are mixed shapes with their own backgrounds, so each fills the tile */}
+                  <Avatar className="h-12 w-12 border-2 border-border group-hover:border-primary/60 bg-background rounded-lg transition-all duration-300 shadow-sm group-hover:shadow-primary/20 group-hover:shadow-md">
                     <AvatarImage
                       src={job.logo ?? ""}
                       alt={job.company}
-                      className="object-contain p-1.5"
+                      className="object-cover bg-white"
+                      style={job.logoScale ? { transform: `scale(${job.logoScale})` } : undefined}
                     />
-                    <AvatarFallback className="font-bold text-primary text-sm bg-primary/10">
+                    <AvatarFallback className="font-bold text-primary text-sm bg-primary/10 rounded-none">
                       {job.company.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

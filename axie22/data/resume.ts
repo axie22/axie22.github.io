@@ -14,6 +14,8 @@ export interface ExperienceEntry {
   location: string;
   date: string;
   logo: string | null;
+  /** Zoom for logos with a lot of built-in padding (fills the timeline tile). Default 1. */
+  logoScale?: number;
   techStack: string[];
   points: string[];
 }
@@ -40,6 +42,18 @@ export const resumeData = {
     },
   ],
   experience: [
+    {
+      company: "IBM",
+      role: "Software Engineer",
+      location: "New York, NY",
+      date: "Jun 2026 - Present",
+      logo: "/ibm.png",
+      logoScale: 1.3,
+      techStack: ["Python", "watsonx.data", "Spark", "Presto", "dbt", "Airflow", "Confluent", "Langfuse"],
+      points: [
+        "Building AI agents and data pipelines on the Nexus Squad (Agentic AI & Workflow Automation)",
+      ],
+    },
     {
       company: "Amazon",
       role: "Software Development Engineer Intern",
