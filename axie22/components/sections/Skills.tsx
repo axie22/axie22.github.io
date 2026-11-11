@@ -24,13 +24,19 @@ const DEVICON: Record<string, string> = {
   "Scikit-learn": "scikitlearn/scikitlearn-original",
   Linux: "linux/linux-original",
   Bash: "bash/bash-original",
-  AWS: "amazonwebservices/amazonwebservices-plain-wordmark",
+  AWS: "amazonwebservices/amazonwebservices-plain",
   Docker: "docker/docker-original",
   PostgreSQL: "postgresql/postgresql-original",
   "Google Cloud": "googlecloud/googlecloud-original",
   Redis: "redis/redis-original",
   MongoDB: "mongodb/mongodb-original",
+  Spark: "apachespark/apachespark-original",
+  Airflow: "apacheairflow/apacheairflow-original",
+  "Confluent Kafka": "apachekafka/apachekafka-original",
 };
+
+// Icons whose artwork is near-black and would vanish on the dark card; render them inverted (white).
+const INVERT_ON_DARK = new Set(["Confluent Kafka"]);
 
 function deviconUrl(slug: string) {
   return `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}.svg`;
@@ -48,7 +54,7 @@ function SkillCard({ name }: { name: string }) {
           alt={name}
           width={32}
           height={32}
-          className="w-8 h-8 object-contain"
+          className={`w-8 h-8 object-contain${INVERT_ON_DARK.has(name) ? " invert" : ""}`}
         />
       ) : (
         <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center">
