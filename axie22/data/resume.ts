@@ -302,6 +302,10 @@ export const resumeData = {
       "Scikit-learn",
       "Linux",
       "Bash",
+      "Spark",
+      "Airflow",
+      "dbt",
+      "Langfuse",
     ],
     infrastructure: [
       "AWS",
@@ -311,6 +315,11 @@ export const resumeData = {
       "Redis",
       "MongoDB",
       "Cloudant",
+      "IBM Cloud",
+      "watsonx.data",
+      "Presto",
+      "Apache Iceberg",
+      "Confluent Kafka",
     ],
     certifications: [
       {
