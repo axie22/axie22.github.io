@@ -28,16 +28,16 @@ export const GitHubStats = () => {
             <div className="p-6 overflow-x-auto">
                 {/* Using ghchart.rshah.org for the contribution graph. 
                     It returns an SVG image of the contribution graph.
-                    We use a generic color scheme or text color to try match theme, 
-                    but the default green is usually fine/recognizable for GitHub.
+                    The SVG has a light background and empty cells, so it's inverted (hue-rotated back)
+                    to sit on the dark card; the hex in the path is picked so filled cells come out amber.
                 */}
                 <img
-                    src={`https://ghchart.rshah.org/${githubUsername}`}
+                    src={`https://ghchart.rshah.org/ffb454/${githubUsername}`}
                     alt="GitHub contribution graph"
                     width={900}
                     height={120}
                     loading="lazy"
-                    className="w-full min-w-[700px]"
+                    className="w-full min-w-[700px] [filter:invert(1)_hue-rotate(180deg)_brightness(1.6)_saturate(1.4)]"
                 />
             </div>
         </div>

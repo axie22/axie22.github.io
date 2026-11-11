@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SUBLINE } from "@/lib/forward-pass/config";
 import { Navbar } from "@/components/layout/Navbar";
-import { BackgroundBlobs } from "@/components/layout/BackgroundBlobs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,11 +47,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
-        <BackgroundBlobs />
         <Navbar />
         {children}
       </body>

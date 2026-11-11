@@ -13,7 +13,6 @@ const links = [
 
 const kbd = "rounded border border-[#2a3245] px-1 font-mono text-[11px]";
 
-// Always dark, regardless of the site theme: the scene is designed for a dark background.
 export const Hero = () => {
   return (
     <section className="relative h-[calc(100svh-4rem)] min-h-[600px] overflow-hidden max-[800px]:h-auto max-[800px]:min-h-[calc(100svh-4rem)] bg-[#07090d] text-[#e6e9ef]">
