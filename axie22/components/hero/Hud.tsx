@@ -49,7 +49,7 @@ export function Hud({ stage, playing, progress, visible, onPlayPause, onReplay, 
         <span><i className="mr-1 inline-block size-2 rounded-[2px] bg-[#ffb454]" />+ activation</span>
         <span><i className="mr-1 inline-block size-2 rounded-[2px] bg-[#4cc9f0]" />− activation</span>
         <span><i className="mr-1 inline-block size-2 rounded-[2px] bg-[#b388ff]" />attention</span>
-        <span className="opacity-80">toy model · simulated activations</span>
+        <span className="opacity-80">toy model · simulated activations · hand-set interest mix; replays skip an immediate repeat</span>
       </div>
     </aside>
   );

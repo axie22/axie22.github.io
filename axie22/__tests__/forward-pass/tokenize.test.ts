@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { disp, tokenize } from "@/lib/forward-pass/tokenize";
 
 describe("tokenize", () => {
-  it("tokenizes the default headline", () => {
-    expect(tokenize("Building ML systems that")).toEqual(["Build", "ing", " ML", " systems", " that"]);
+  it("tokenizes the default prompt", () => {
+    expect(tokenize("Currently thinking about")).toEqual(["Current", "ly", " think", "ing", " about"]);
   });
 
   it("round-trips to the original text", () => {
@@ -28,7 +28,7 @@ describe("tokenize", () => {
 
 describe("disp", () => {
   it("shows a leading space as a middle dot", () => {
-    expect(disp(" scale")).toBe("·scale");
+    expect(disp(" inference")).toBe("·inference");
     expect(disp("<bos>")).toBe("<bos>");
     expect(disp(".")).toBe(".");
   });

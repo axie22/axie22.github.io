@@ -2,16 +2,17 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ALLOW_CUSTOM_PROMPT, FULL_HEADLINE, HEADLINE, MAX_PROMPT_TOKENS, POSTER_URL } from "@/lib/forward-pass/config";
+import { ALLOW_CUSTOM_PROMPT, MAX_PROMPT_TOKENS, POSTER_URL, PROMPT } from "@/lib/forward-pass/config";
 import type { EngineEvents, ForwardPassEngine, StageInfo } from "@/lib/forward-pass/engine";
-import { isDefaultPrompt, validateHeadline } from "@/lib/forward-pass/model";
+import { nucleus, validateConfig } from "@/lib/forward-pass/model";
 import { tokenize } from "@/lib/forward-pass/tokenize";
 import { Hud } from "./Hud";
 
 // three.js never runs on the server and loads after first paint.
 const ForwardPassCanvas = dynamic(() => import("./ForwardPassCanvas"), { ssr: false });
 
-const winners = HEADLINE.steps.map((s) => s[0][0]);
+// No-WebGL fallback: show the most likely interest, finished.
+const fallbackTokens = [...nucleus()[0].toks, "."];
 
 /**
  * Client island for the hero: prompt input, animated tagline, canvas, HUD.
@@ -22,8 +23,8 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
   const stageRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [input, setInput] = useState(HEADLINE.prompt);
-  const [runPrompt, setRunPrompt] = useState(HEADLINE.prompt);
+  const [input, setInput] = useState(PROMPT);
+  const [runPrompt, setRunPrompt] = useState(PROMPT);
   const [generated, setGenerated] = useState<string[]>([]);
   const [truncated, setTruncated] = useState(false);
   const [stage, setStage] = useState<StageInfo>({ title: "—", detail: "" });
@@ -33,7 +34,7 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
   const [hudVisible, setHudVisible] = useState(true);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") validateHeadline().forEach((w) => console.warn(`[forward-pass] ${w}`));
+    if (process.env.NODE_ENV !== "production") validateConfig().forEach((w) => console.warn(`[forward-pass] ${w}`));
   }, []);
 
   const events = useMemo<EngineEvents>(
@@ -63,8 +64,8 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
     engineRef.current = null;
     setReady(false);
     setFailed(true);
-    setRunPrompt(HEADLINE.prompt);
-    setGenerated(winners);
+    setRunPrompt(PROMPT);
+    setGenerated(fallbackTokens);
   };
 
   const run = (text: string) => {
@@ -76,7 +77,7 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    run(ALLOW_CUSTOM_PROMPT ? input : HEADLINE.prompt);
+    run(ALLOW_CUSTOM_PROMPT ? input : PROMPT);
   };
 
   const onPlayPause = () => {
@@ -86,8 +87,6 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
     else if (done) run(input);
     else eng.play();
   };
-
-  const srText = isDefaultPrompt(runPrompt) ? FULL_HEADLINE : runPrompt + generated.join("");
 
   return (
     <>
@@ -110,6 +109,9 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              // don't auto re-sample while the visitor is typing
+              onFocus={() => engineRef.current?.setAutoLoop(false)}
+              onBlur={() => engineRef.current?.setAutoLoop(true)}
               readOnly={!ALLOW_CUSTOM_PROMPT}
               spellCheck={false}
               aria-label="Prompt fed into the model"
@@ -122,17 +124,15 @@ export function HeroController({ heading, children }: { heading: ReactNode; chil
 
           {heading}
 
-          <p className="min-h-[1.7em] font-mono text-[clamp(15px,1.7vw,19px)] leading-normal">
-            <span className="sr-only">{srText}</span>
-            <span aria-hidden="true">
-              {runPrompt}
-              {generated.map((t, i) => (
-                <span key={i} className="text-[#ffb454]">
-                  {t}
-                </span>
-              ))}
-              <span className="fp-caret" />
-            </span>
+          {/* Changes every run, so it's hidden from assistive tech; the prompt and subline carry the meaning. */}
+          <p aria-hidden="true" className="min-h-[1.7em] font-mono text-[clamp(15px,1.7vw,19px)] leading-normal">
+            {runPrompt}
+            {generated.map((t, i) => (
+              <span key={i} className="text-[#ffb454]">
+                {t}
+              </span>
+            ))}
+            <span className="fp-caret" />
           </p>
 
           {children}

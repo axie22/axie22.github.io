@@ -1,31 +1,113 @@
-// Configuration for the "live forward pass" hero. Content (headline) lives at the top;
+// Configuration for the "live forward pass" hero. Content (prompt + interests) lives at the top;
 // look-and-feel constants below mirror the prototype (forward-pass-hero.html).
 
 export type Candidate = readonly [token: string, prob: number];
 
-export const HEADLINE: {
-  prompt: string;
-  steps: readonly (readonly Candidate[])[];
-} = {
-  // TODO(alex): replace. Placeholder from the prototype.
-  prompt: "Building ML systems that",
-  // One entry per decode step. First item of each list is the winner (greedy).
-  // Probabilities are for display; they don't need to sum to 1 (the rest of the vocab is implied).
-  steps: [
-    [[" scale", 0.41], [" learn", 0.22], [" ship", 0.12], [" work", 0.08], [" matter", 0.06], [" think", 0.04]],
-    [[".", 0.58], [" well", 0.11], [",", 0.09], [" reliably", 0.07], [" fast", 0.05], [" up", 0.04]],
+export type Interest = { label: string; p: number; toks: readonly string[] };
+
+export const PROMPT = "Currently thinking about";
+export const TOP_P = 0.95;
+/** Pause after a finished run before sampling again. */
+export const LOOP_DELAY_S = 4.5;
+
+/* What I'm into right now. Edit freely: p is the probability shown at the first decode step
+   (keep the sum <= 1; the rest of the vocab is implied). toks = how the interest tokenizes;
+   the bars show the first token, later passes finish the word. */
+export const INTERESTS: readonly Interest[] = [
+  { label: "inference", p: 0.19, toks: [" inference"] },
+  { label: "interpretability", p: 0.17, toks: [" interpret", "ability"] },
+  { label: "post-training", p: 0.15, toks: [" post", "-training"] },
+  { label: "safety", p: 0.13, toks: [" safety"] },
+  { label: "optimization", p: 0.12, toks: [" optim", "ization"] },
+  {
+    label: "multi-agent orchestration",
+    p: 0.11,
+    toks: [" multi", "-agent", " orchestration"],
+  },
+  { label: "infra", p: 0.09, toks: [" infra"] },
+];
+
+/* Continuation distributions, keyed by the token being predicted.
+   Winner first, with p >= TOP_P so the nucleus is a single token (deterministic).
+   Runner-ups are deliberate jokes (post → "gres", optim → "ism"); keep them. */
+export const CONT: Record<string, readonly Candidate[]> = {
+  ability: [
+    ["ability", 0.96],
+    ["ing", 0.015],
+    ["able", 0.01],
+    ["ation", 0.007],
+    ["ive", 0.004],
+    ["er", 0.002],
+  ],
+  "-training": [
+    ["-training", 0.95],
+    ["-hoc", 0.02],
+    ["gres", 0.012],
+    ["-mortem", 0.008],
+    ["-doc", 0.005],
+    ["ers", 0.003],
+  ],
+  ization: [
+    ["ization", 0.96],
+    ["izer", 0.02],
+    ["ism", 0.008],
+    ["al", 0.006],
+    ["ize", 0.004],
+    ["izing", 0.002],
+  ],
+  "-agent": [
+    ["-agent", 0.95],
+    ["modal", 0.025],
+    ["-head", 0.01],
+    ["-GPU", 0.007],
+    ["-task", 0.005],
+    ["-step", 0.003],
+  ],
+  " orchestration": [
+    [" orchestration", 0.95],
+    [" systems", 0.02],
+    [" RL", 0.012],
+    [" debate", 0.008],
+    [" memory", 0.006],
+    [" chaos", 0.004],
+  ],
+  ".": [
+    [".", 0.96],
+    [",", 0.015],
+    [" and", 0.01],
+    ["!", 0.007],
+    ["...", 0.005],
+    [" (", 0.003],
   ],
 };
 
-/** Prompt + every greedy pick, as one string (for meta tags and screen readers). */
-export const FULL_HEADLINE = HEADLINE.prompt + HEADLINE.steps.map((s) => s[0][0]).join("");
+const listJoin = (xs: readonly string[]) =>
+  xs.length < 2
+    ? xs.join("")
+    : `${xs.slice(0, -1).join(", ")}, and ${xs[xs.length - 1]}`;
 
-/** Let visitors type their own prompt. Custom prompts get pseudo-random candidates from CUSTOM_POOL. */
+/** Stable description under the (changing) tagline; also the meta description. Generated so it can't drift from INTERESTS. */
+export const SUBLINE = `Software engineer at IBM. Into ${listJoin(INTERESTS.map((i) => i.label))}.`;
+
+/** Let visitors type their own prompt. Custom prompts get greedy, pseudo-random candidates from CUSTOM_POOL. */
 export const ALLOW_CUSTOM_PROMPT = true;
-export const CUSTOM_POOL = [" models", " systems", " data", " agents", " inference", " tokens", " code", " things", ".", " at", " scale"];
+export const CUSTOM_POOL = [
+  " models",
+  " systems",
+  " data",
+  " agents",
+  " inference",
+  " tokens",
+  " code",
+  " things",
+  ".",
+  " at",
+  " scale",
+];
+export const CUSTOM_STEPS = 2;
 
 export const MAX_PROMPT_TOKENS = 7;
-export const MAX_GEN_LIMIT = 3;
+export const MAX_INTEREST_TOKENS = 3;
 
 /* ---------- toy model shape ---------- */
 export const D_DESKTOP = 16; // dims shown per vector
@@ -49,7 +131,7 @@ export const TIMING = {
   mlp: 1.0,
   logits: 1.8,
   hold: 0.9, // pause at the top before the next decode step
-  cachedSpeedup: 1.35, // KV-cached passes play a bit faster
+  cachedSpeedup: 2, // KV-cached passes (steps >= 1) play faster so a 4-pass run stays under ~45 s
 };
 
 /* ---------- rendering ---------- */

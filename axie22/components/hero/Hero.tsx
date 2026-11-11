@@ -1,8 +1,8 @@
 import { resumeData } from "@/data/resume";
-import { ALLOW_CUSTOM_PROMPT } from "@/lib/forward-pass/config";
+import { ALLOW_CUSTOM_PROMPT, SUBLINE } from "@/lib/forward-pass/config";
 import { HeroController } from "./HeroController";
 
-const { name, bio, contact } = resumeData.personalInfo;
+const { name, contact } = resumeData.personalInfo;
 
 const links = [
   { label: "Resume", href: "/Alexander_Xie_resume.pdf", external: true },
@@ -20,7 +20,7 @@ export const Hero = () => {
       <HeroController
         heading={<h1 className="mt-[26px] mb-1.5 text-[clamp(44px,6vw,72px)] font-semibold tracking-[-0.03em]">{name}</h1>}
       >
-        <p className="mt-3 max-w-[460px] text-sm leading-relaxed text-[#8a93a6]">{bio}</p>
+        <p className="mt-3.5 max-w-[460px] text-[15px] leading-[1.55] text-[#8a93a6]">{SUBLINE}</p>
         <nav className="mt-7 flex flex-wrap gap-5 text-sm">
           {links.map(({ label, href, external }) => (
             <a
@@ -34,14 +34,15 @@ export const Hero = () => {
           ))}
         </nav>
         <p className="mt-[18px] text-xs leading-normal text-[#8a93a6]">
+          The bars are what I&apos;m into lately: each run samples one.
           {ALLOW_CUSTOM_PROMPT ? (
             <>
-              The prompt above is the model&apos;s input. Edit it and press <kbd className={kbd}>Enter</kbd> to run a new forward pass.
+              {" "}Edit the prompt and press <kbd className={kbd}>Enter</kbd> to try your own
+              <span className="pointer-coarse:hidden">; drag to rotate</span>.
             </>
           ) : (
-            <>The prompt above is the model&apos;s input.</>
+            <span className="pointer-coarse:hidden"> Drag to rotate.</span>
           )}
-          <span className="pointer-coarse:hidden"> Drag the scene to rotate it.</span>
         </p>
       </HeroController>
     </section>

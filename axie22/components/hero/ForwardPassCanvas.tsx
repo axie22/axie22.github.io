@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { D_DESKTOP, D_MOBILE, HEADLINE, MAX_DPR } from "@/lib/forward-pass/config";
+import { D_DESKTOP, D_MOBILE, MAX_DPR, PROMPT } from "@/lib/forward-pass/config";
 import { ForwardPassEngine, isMobileWidth, type EngineEvents } from "@/lib/forward-pass/engine";
 
-type DevHandle = { engine: ForwardPassEngine; seek(p01: number): void; start(prompt: string): boolean; snapshot(): string };
+type DevHandle = { engine: ForwardPassEngine; seek(p01: number): void; start(prompt: string, forceInterest?: number): boolean; snapshot(): string };
 
 declare global {
   interface Window {
@@ -61,7 +61,10 @@ export default function ForwardPassCanvas({ events, stageRef, onEngine, onFail }
       if (cancelled) return;
 
       const mobile = isMobileWidth();
-      const finalOnly = isDev && new URLSearchParams(window.location.search).get("fp") === "final";
+      // Dev-only: ?fp=final renders the final state; &fpi=<index> pins the sampled interest.
+      const params = new URLSearchParams(window.location.search);
+      const finalOnly = isDev && params.get("fp") === "final";
+      const forceInterest = isDev && params.has("fpi") ? Number(params.get("fpi")) : undefined;
       try {
         engine = new ForwardPassEngine(canvas, proxy, {
           container,
@@ -80,10 +83,10 @@ export default function ForwardPassCanvas({ events, stageRef, onEngine, onFail }
       }
       reduceMq.addEventListener("change", onReduceChange);
       propsRef.current.onEngine(engine);
-      engine.start(HEADLINE.prompt);
+      engine.start(PROMPT, forceInterest);
       if (isDev) {
         const e = engine;
-        window.__fp = { engine: e, seek: (p) => e.seek(p), start: (p) => e.start(p), snapshot: () => e.snapshot() };
+        window.__fp = { engine: e, seek: (p) => e.seek(p), start: (p, i) => e.start(p, i), snapshot: () => e.snapshot() };
       }
     })();
 

@@ -1,6 +1,6 @@
 // Toy decoder-only transformer. Activations and attention are deterministic pseudo-random
 // (hash-based), shaped so the heads resemble patterns real models show. Not real model internals.
-import { CUSTOM_POOL, D_DESKTOP, HEADLINE, L, MAX_GEN_LIMIT, MAX_PROMPT_TOKENS, S, type Candidate } from "./config";
+import { CONT, CUSTOM_POOL, CUSTOM_STEPS, D_DESKTOP, INTERESTS, L, MAX_INTEREST_TOKENS, MAX_PROMPT_TOKENS, PROMPT, S, TOP_P, type Candidate, type Interest } from "./config";
 import { tokenize } from "./tokenize";
 
 export const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
@@ -81,14 +81,73 @@ export function computeModel(toks: readonly string[], dims = D_DESKTOP): Model {
   return { T, W, V };
 }
 
-export const genSteps = () => clamp(HEADLINE.steps.length, 1, MAX_GEN_LIMIT);
+export const isDefaultPrompt = (text: string) => text.trim() === PROMPT;
 
-export const isDefaultPrompt = (text: string) => text.trim() === HEADLINE.prompt;
+/** Step-0 nucleus: interests sorted by p, cut once the cumulative mass reaches TOP_P. */
+export function nucleus(): (Interest & { index: number })[] {
+  const sorted = INTERESTS.map((it, index) => ({ ...it, index })).sort((a, b) => b.p - a.p);
+  const out: typeof sorted = [];
+  let cum = 0;
+  for (const it of sorted) {
+    out.push(it);
+    cum += it.p;
+    if (cum >= TOP_P) break;
+  }
+  return out;
+}
 
-/** Top-6 next-token candidates for decode `step`, sorted descending. Scripted for the default prompt. */
-export function getCandidates(toks: readonly string[], step: number, isDefault: boolean): readonly Candidate[] {
-  if (isDefault) return HEADLINE.steps[step];
-  const last = step === genSteps() - 1;
+export type DecodePath = {
+  interest: Interest;
+  index: number;
+  /** The run's decode path: the interest's tokens, then ".". One pass per token. */
+  toks: string[];
+  /** Size of the step-0 nucleus. */
+  nucleus: number;
+};
+
+/**
+ * Top-p sample an interest for the default prompt. Re-samples if it equals `lastIndex`
+ * (no immediate repeats; pass -1 to disable). `force` picks an interest directly (dev screenshots).
+ */
+export function samplePath(lastIndex = -1, rng: () => number = Math.random, force?: number): DecodePath {
+  const nuc = nucleus();
+  const z = nuc.reduce((a, c) => a + c.p, 0);
+  let pick = force !== undefined ? nuc.find((c) => c.index === force) : undefined;
+  while (!pick || (force === undefined && pick.index === lastIndex && nuc.length > 1)) {
+    let r = rng() * z;
+    pick = nuc.find((c) => (r -= c.p) <= 0) ?? nuc[nuc.length - 1];
+  }
+  return { interest: INTERESTS[pick.index], index: pick.index, toks: [...pick.toks, "."], nucleus: nuc.length };
+}
+
+/** Number of decode passes in a run: the sampled path for the default prompt, CUSTOM_STEPS otherwise. */
+export const totalSteps = (path: DecodePath | null) => (path ? path.toks.length : CUSTOM_STEPS);
+
+export type StepCands = {
+  /** Bars, sorted descending. */
+  cands: readonly Candidate[];
+  /** The emitted token: sampled, so not necessarily the tallest bar. */
+  winner: string;
+  nucleus: number;
+  greedy: boolean;
+};
+
+export function stepCands(path: DecodePath | null, toks: readonly string[], step: number): StepCands {
+  if (path) {
+    if (step === 0) {
+      const cands = INTERESTS.map((it): Candidate => [it.toks[0], it.p]).sort((a, b) => b[1] - a[1]);
+      return { cands, winner: path.toks[0], nucleus: path.nucleus, greedy: false };
+    }
+    const tok = path.toks[step];
+    return { cands: CONT[tok], winner: tok, nucleus: 1, greedy: false };
+  }
+  const c = getCandidates(toks, step);
+  return { cands: c, winner: c[0][0], nucleus: 1, greedy: true };
+}
+
+/** Custom prompts: top-6 pseudo-random candidates from a small pool, sorted descending (greedy). */
+export function getCandidates(toks: readonly string[], step: number): readonly Candidate[] {
+  const last = step === CUSTOM_STEPS - 1;
   const sc = CUSTOM_POOL.map((t) => [t, hash("c", toks.join("|"), t) * 3 + (last && t === "." ? 2.2 : 0)] as const);
   const mx = Math.max(...sc.map((s) => s[1]));
   const ex = sc.map(([t, v]) => [t, Math.exp(v - mx)] as const);
@@ -99,19 +158,26 @@ export function getCandidates(toks: readonly string[], step: number, isDefault: 
     .slice(0, 6);
 }
 
-/** Problems with HEADLINE that would make the visual read oddly. Logged as dev-only warnings. */
-export function validateHeadline(): string[] {
+/** Problems with the prompt/interest config that would break sampling or crowd the scene. Logged as dev-only warnings. */
+export function validateConfig(): string[] {
   const w: string[] = [];
-  const n = tokenize(HEADLINE.prompt).length;
-  if (n === 0) w.push("HEADLINE.prompt tokenizes to nothing.");
-  if (n > MAX_PROMPT_TOKENS) w.push(`HEADLINE.prompt is ${n} tokens; only the first ${MAX_PROMPT_TOKENS} are used.`);
-  if (HEADLINE.steps.length < 1 || HEADLINE.steps.length > MAX_GEN_LIMIT)
-    w.push(`HEADLINE.steps has ${HEADLINE.steps.length} steps; expected 1–${MAX_GEN_LIMIT}.`);
-  HEADLINE.steps.forEach((cands, i) => {
-    if (cands.length !== 6) w.push(`Step ${i} has ${cands.length} candidates; expected 6.`);
-    if (cands.some((c, k) => k > 0 && c[1] > cands[k - 1][1])) w.push(`Step ${i} candidates aren't sorted descending.`);
-    if (cands[0] && cands[0][1] < 0.25) w.push(`Step ${i} winner "${cands[0][0]}" is only ${Math.round(cands[0][1] * 100)}%; aim for >= 25%.`);
-    for (const [t] of cands) if (t.length > 10) w.push(`Step ${i} candidate "${t}" is long; bar labels may collide.`);
+  const n = tokenize(PROMPT).length;
+  if (n === 0) w.push("PROMPT tokenizes to nothing.");
+  if (n > MAX_PROMPT_TOKENS) w.push(`PROMPT is ${n} tokens; only the first ${MAX_PROMPT_TOKENS} are used.`);
+  const inNucleus = new Set(nucleus().map((c) => c.index));
+  INTERESTS.forEach((it, i) => {
+    if (!inNucleus.has(i)) w.push(`Interest "${it.label}" falls outside the top-p nucleus (p=${TOP_P}) and can never be sampled.`);
+    if (it.toks.length > MAX_INTEREST_TOKENS) w.push(`Interest "${it.label}" is ${it.toks.length} tokens; keep it <= ${MAX_INTEREST_TOKENS}.`);
+    for (const t of [...it.toks.slice(1), "."]) if (!CONT[t]) w.push(`CONT is missing an entry for "${t}" (interest "${it.label}").`);
   });
+  if (INTERESTS.reduce((a, c) => a + c.p, 0) > 1 + 1e-9) w.push("INTERESTS probabilities sum to more than 1.");
+  for (const [key, cands] of Object.entries(CONT)) {
+    if (cands[0]?.[0] !== key) w.push(`CONT["${key}"] should list "${key}" first.`);
+    if ((cands[0]?.[1] ?? 0) < TOP_P) w.push(`CONT["${key}"] winner is below TOP_P, so the nucleus won't collapse to one token.`);
+    if (cands.some((c, k) => k > 0 && c[1] > cands[k - 1][1])) w.push(`CONT["${key}"] isn't sorted descending.`);
+  }
+  const labels = [...INTERESTS.map((it) => it.toks[0]), ...Object.values(CONT).flatMap((c) => c.map((x) => x[0]))];
+  // ~12 is comfortable; " orchestration" (14) still fits because CONT winners sit alone over the last column.
+  for (const t of labels) if (t.length > 14) w.push(`Bar label "${t}" is long; labels may collide.`);
   return w;
 }

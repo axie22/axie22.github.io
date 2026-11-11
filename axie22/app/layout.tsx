@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { FULL_HEADLINE } from "@/lib/forward-pass/config";
+import { SUBLINE } from "@/lib/forward-pass/config";
 import { Navbar } from "@/components/layout/Navbar";
 import { BackgroundBlobs } from "@/components/layout/BackgroundBlobs";
 
@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const description = `${FULL_HEADLINE} Portfolio of Alexander Xie, a Software Engineer specializing in scalable systems and ML infrastructure.`;
+const description = SUBLINE;
 
 export const metadata: Metadata = {
   title: "Alexander Xie | Software Engineer",

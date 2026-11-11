@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { COLORS, CUBE, DX, DZ, L, LOGIT_Y, MAX_PROMPT_TOKENS, MOBILE_BREAKPOINT, S, TIMING, TOP_Y, levelY, type Candidate } from "./config";
+import { COLORS, CUBE, DX, DZ, L, LOGIT_Y, LOOP_DELAY_S, MAX_PROMPT_TOKENS, MOBILE_BREAKPOINT, PROMPT, S, TIMING, TOP_P, TOP_Y, levelY } from "./config";
 import { makeLabel } from "./labels";
-import { HEADS, clamp, computeModel, genSteps, getCandidates, isDefaultPrompt, sstep, type Model } from "./model";
+import { HEADS, clamp, computeModel, isDefaultPrompt, samplePath, sstep, stepCands, totalSteps, type DecodePath, type Model, type StepCands } from "./model";
 import { disp, tokenize } from "./tokenize";
 
 export type StageInfo = { title: string; detail: string };
@@ -46,10 +46,12 @@ type Pass = {
   slabs: Slab[];
   unembed: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>;
   bars: Bar[];
-  cands: readonly Candidate[];
+  st: StepCands;
   xl: number;
   T: number;
   emitted: boolean;
+  /** Tallest logit bar, for camera framing. */
+  maxBarH: number;
   model: Model;
 };
 
@@ -82,6 +84,10 @@ export class ForwardPassEngine {
   private genCount = 0; // index of the current decode step
   private cached = 0; // columns computed in earlier passes (KV cache)
   private isDefault = true;
+  private path: DecodePath | null = null; // sampled decode path (default prompt only)
+  private lastInterest = -1;
+  private doneT = 0; // seconds since the run finished (auto-loop)
+  private autoLoop = true;
   private p = -1;
   private playing = false;
   private done = false;
@@ -95,6 +101,8 @@ export class ForwardPassEngine {
   private focusY = 0;
   private dist = 18;
   private elapsed = 0;
+  /** Fraction of the canvas height the scene should fit in when framing the final state. */
+  private fitFrac = 0.65;
 
   // loop + visibility
   private rafId = 0;
@@ -130,18 +138,24 @@ export class ForwardPassEngine {
 
   /* ---------- public API ---------- */
 
-  /** Run a new forward pass on `promptText`. Returns false for an empty prompt. */
-  start(promptText: string): boolean {
+  /**
+   * Run a new forward pass on `promptText`. The default prompt samples a fresh interest
+   * (`forceInterest` pins one, for screenshots). Returns false for an empty prompt.
+   */
+  start(promptText: string, forceInterest?: number): boolean {
     const toks = tokenize(promptText).slice(0, MAX_PROMPT_TOKENS);
     if (!toks.length || this.disposed) return false;
     const trimmed = promptText.trim();
     this.isDefault = isDefaultPrompt(trimmed);
     // What the model actually saw (prompt may have been truncated).
     this.prompt = this.isDefault ? trimmed : toks.join("");
+    this.path = this.isDefault ? samplePath(this.lastInterest, Math.random, forceInterest) : null;
+    if (this.path) this.lastInterest = this.path.index;
     this.tokens = ["<bos>", ...toks];
     this.genCount = 0;
     this.cached = 0;
     this.done = false;
+    this.doneT = 0;
     this.events.onRunStart(this.prompt);
     if (this.opts.reducedMotion || this.opts.finalOnly) {
       this.jumpToFinal();
@@ -165,6 +179,12 @@ export class ForwardPassEngine {
 
   pause() {
     this.setPlaying(false);
+  }
+
+  /** Auto re-sample after a finished run. Off while the visitor is typing in the prompt. */
+  setAutoLoop(enabled: boolean) {
+    this.autoLoop = enabled;
+    this.doneT = 0;
   }
 
   /** Scrub within the current pass. Pauses; never triggers the next decode step. */
@@ -216,16 +236,16 @@ export class ForwardPassEngine {
   }
 
   private jumpToFinal() {
-    const n = genSteps();
+    const n = totalSteps(this.path);
     for (let g = 0; g < n - 1; g++) {
-      const tok = getCandidates(this.tokens, g, this.isDefault)[0][0];
+      const tok = stepCands(this.path, this.tokens, g).winner;
       this.events.onTokenEmitted(tok);
       this.tokens.push(tok);
     }
     this.genCount = n - 1;
     this.cached = n > 1 ? this.tokens.length - 1 : 0;
     this.buildPass();
-    this.events.onTokenEmitted(this.pass!.cands[0][0]);
+    this.events.onTokenEmitted(this.pass!.st.winner);
     this.pass!.emitted = true;
     this.p = S;
     this.setPlaying(false);
@@ -236,14 +256,15 @@ export class ForwardPassEngine {
   }
 
   private onPassDone() {
-    if (this.genCount + 1 < genSteps()) {
+    if (this.genCount + 1 < totalSteps(this.path)) {
       this.genCount++;
       this.cached = this.tokens.length;
-      this.tokens.push(this.pass!.cands[0][0]);
+      this.tokens.push(this.pass!.st.winner);
       this.buildPass();
       this.p = -1;
     } else {
       this.done = true;
+      this.doneT = 0;
       this.setPlaying(false);
       this.p = S + TIMING.hold;
       this.events.onDone();
@@ -382,7 +403,7 @@ export class ForwardPassEngine {
       }
 
     // unembed -> logits for the last position
-    const cands = getCandidates(tokens, genCount, this.isDefault);
+    const st = stepCands(this.path, tokens, genCount);
     const xl = xs(T - 1);
     const bars: Bar[] = [];
     const ug = new THREE.BufferGeometry();
@@ -390,17 +411,21 @@ export class ForwardPassEngine {
     const unembed = new THREE.Line(ug, new THREE.LineBasicMaterial({ color: C.violet, transparent: true, opacity: 0.8 }));
     unembed.frustumCulled = false;
     group.add(unembed);
-    cands.forEach(([tok, pr], c) => {
-      const win = c === 0;
-      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1, 0.42), new THREE.MeshLambertMaterial({ color: win ? C.amber : C.slate, transparent: true, opacity: 1 }));
-      const x = xl - c * 1.05; // winner sits over the last token, runners-up step back toward the stack's center
-      const lab = this.label(`${disp(tok)}\n${Math.round(pr * 100)}%`, { h: 0.2, color: win ? COLORS.amber : COLORS.dim, weight: win ? 500 : 400 });
+    st.cands.forEach(([tok, pr], c) => {
+      // highlight the sampled token, not the tallest bar
+      const win = tok === st.winner;
+      const pct = pr < 0.01 ? `${(pr * 100).toFixed(1)}%` : `${Math.round(pr * 100)}%`;
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1, 0.55), new THREE.MeshLambertMaterial({ color: win ? C.amber : C.slate, transparent: true, opacity: 1 }));
+      // Most likely sits over the last token, runners-up step back toward the stack's center.
+      // Slightly wider spacing / smaller labels than the prototype (1.3 / 0.27) so 7 step-0 labels don't touch.
+      const x = xl - c * 1.45;
+      const lab = this.label(`${disp(tok)}\n${pct}`, { h: 0.25, color: win ? COLORS.amber : COLORS.dim, weight: win ? 500 : 400 });
       lab.center.set(0.5, 0);
       group.add(bar, lab);
-      bars.push({ bar, lab, x, h: 0.15 + pr * 4 });
+      bars.push({ bar, lab, x, h: 0.15 + pr * 5.5 });
     });
 
-    this.pass = { group, mesh, inst, plates, spines, arcs, slabs, unembed, bars, cands, xl, T, emitted: false, model };
+    this.pass = { group, mesh, inst, plates, spines, arcs, slabs, unembed, bars, st, xl, T, emitted: false, model, maxBarH: Math.max(...bars.map((b) => b.h)) };
   }
 
   /* ---------- per-frame scene update ---------- */
@@ -475,17 +500,27 @@ export class ForwardPassEngine {
     const { p, cached, done } = this;
     let title: string, detail: string;
     const cacheNote = cached > 0 ? " KV cache: earlier columns are reused; only the new token is computed." : "";
-    const n = genSteps();
     if (done) {
-      title = `done · generated ${n} token${n > 1 ? "s" : ""}`;
-      detail = `Greedy decoding, ${n} step${n > 1 ? "s" : ""}. Edit the prompt and press Enter to run it again.`;
+      if (this.path) {
+        title = `done · sampled "${this.path.interest.label}"`;
+        detail = this.opts.reducedMotion ? "Press Replay to sample again." : "Sampling again in a few seconds; each run can land on a different interest.";
+      } else {
+        title = `done · generated ${totalSteps(null)} tokens`;
+        detail = "Custom prompt → toy vocab, greedy decoding. Press Replay or edit the prompt.";
+      }
     } else if (p < 0) {
       title = "embed";
       detail = `token → vector (showing ${this.opts.dims} of d_model dims). Height = |activation|.${cacheNote}`;
     } else if (p >= S - 1) {
-      const [t, pr] = this.pass!.cands[0];
+      const st = this.pass!.st;
+      const pr = Math.round((st.cands.find((c) => c[0] === st.winner)?.[1] ?? 0) * 100);
+      const w = disp(st.winner);
       title = "unembed → logits";
-      detail = `Last position's residual × W_U → softmax over vocab. Greedy pick: "${disp(t)}" (${Math.round(pr * 100)}%).`;
+      detail = st.greedy
+        ? `Last position's residual × W_U → softmax. Greedy pick: "${w}" (${pr}%).`
+        : st.nucleus > 1
+          ? `Top-p sampling (p=${TOP_P}): ${st.nucleus} candidates in the nucleus → sampled "${w}" (${pr}%).`
+          : `Nucleus collapses to one token (${pr}% ≥ p) → "${w}" is effectively certain.`;
     } else {
       const s = Math.floor(p) + 1;
       const b = Math.ceil(s / 2);
@@ -552,11 +587,16 @@ export class ForwardPassEngine {
     if (this.playing && P) {
       this.p += (dt * (this.cached > 0 ? TIMING.cachedSpeedup : 1)) / this.stageDur(this.p);
       if (!P.emitted && this.p >= S - 0.15) {
-        this.events.onTokenEmitted(P.cands[0][0]);
+        this.events.onTokenEmitted(P.st.winner);
         P.emitted = true;
       }
       if (this.p >= S + TIMING.hold) this.onPassDone();
       this.emitProgress();
+    }
+    // auto re-sample after a finished run (default prompt only)
+    if (this.done && this.isDefault && this.autoLoop && !this.opts.reducedMotion) {
+      this.doneT += dt;
+      if (this.doneT > LOOP_DELAY_S) this.start(PROMPT);
     }
     if (this.pass) {
       this.updatePass();
@@ -564,12 +604,21 @@ export class ForwardPassEngine {
     }
 
     const T = this.pass ? this.pass.T : 6;
+    const barH = this.pass ? this.pass.maxBarH : 0;
     const { p, done } = this;
-    const targetY = done ? LOGIT_Y / 2 + 1.5 : levelY(clamp(p, 0, S - 1)) + (p > S - 1 ? (LOGIT_Y - TOP_Y) * clamp(p - (S - 1), 0, 1) : 0);
-    // Back off on narrow (portrait) screens so every column fits horizontally.
-    const fitDist = ((T * DX) / 2 + 1) / (Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.camera.aspect);
+    const tan = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
+    // Final state frames everything from the token labels to the top of the tallest bar (+ its label).
+    const topY = LOGIT_Y + barH + 0.8;
+    const botY = -1;
+    const targetY = done
+      ? (topY + botY) / 2
+      : levelY(clamp(p, 0, S - 1)) + (p > S - 1 ? (LOGIT_Y + barH / 2 - TOP_Y) * clamp(p - (S - 1), 0, 1) : 0);
+    // Back off on narrow (portrait) screens so every column fits horizontally...
+    const fitDist = ((T * DX) / 2 + 1) / (tan * this.camera.aspect);
+    // ...and, in the final state, so the whole stack fits vertically.
+    const fitV = done ? ((topY - botY) / 2 + 0.5) / (tan * this.fitFrac) : 0;
     const baseDist = (done ? 24 : 17) + T * 1.4;
-    const targetDist = Math.max(baseDist, fitDist);
+    const targetDist = Math.max(baseDist, fitDist, fitV);
     const k = snap ? 1 : Math.min(1, dt * 2.2);
     this.focusY += (targetY - this.focusY) * k;
     this.dist += (targetDist - this.dist) * k;
@@ -596,11 +645,14 @@ export class ForwardPassEngine {
     this.camera.aspect = w / h;
     // Desktop: scene sits right of the text. Mobile: below it, centered on the stage band.
     const stage = this.opts.stageEl;
+    // Desktop leaves headroom so the right-most (new) column stays clear of the HUD.
+    this.fitFrac = 0.65;
     if (w > MOBILE_BREAKPOINT) this.camera.setViewOffset(w, h, -w * 0.15, h * 0.1, w, h);
     else if (stage && stage.offsetHeight > 0) {
       const cr = container.getBoundingClientRect();
       const sr = stage.getBoundingClientRect();
       this.camera.setViewOffset(w, h, 0, h / 2 - (sr.top + sr.height / 2 - cr.top), w, h);
+      this.fitFrac = sr.height / h;
     } else this.camera.setViewOffset(w, h, 0, -h * 0.22, w, h);
     this.camera.updateProjectionMatrix();
     this.requestRender();
