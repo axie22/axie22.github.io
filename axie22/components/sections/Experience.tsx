@@ -1,84 +1,133 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { resumeData } from "@/data/resume";
-import { FadeIn } from "@/components/animations/FadeIn";
+import { useId, useState } from "react";
+import Image from "next/image";
+import { resumeData, type ExperienceEntry } from "@/data/resume";
+import { cn, dateRange, joinTags } from "@/lib/utils";
+import { useHydrated } from "@/lib/useHydrated";
+
+const VISIBLE_BULLETS = 2;
+
+const focusRing =
+  "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+
+/** 40px logo tile. Logos are mixed shapes with their own backgrounds, so each fills a white tile. */
+function LogoTile({ job }: { job: ExperienceEntry }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!job.logo || failed) {
+    return (
+      <div
+        role="img"
+        aria-label={job.company}
+        className="relative z-10 grid size-10 place-items-center rounded-lg border bg-card text-[13px] font-semibold text-muted-foreground"
+      >
+        {job.company.slice(0, 2)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative z-10 size-10 overflow-hidden rounded-lg border bg-white">
+      <Image
+        src={job.logo}
+        alt={job.company}
+        width={40}
+        height={40}
+        className="size-full object-cover"
+        style={job.logoScale ? { transform: `scale(${job.logoScale})` } : undefined}
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
+
+function Bullets({ points }: { points: string[] }) {
+  const hydrated = useHydrated();
+  const [expanded, setExpanded] = useState(false);
+  const listId = useId();
+  const extra = points.length - VISIBLE_BULLETS;
+  // Everything is visible until hydration, so no-JS readers and crawlers get every bullet.
+  const collapsed = hydrated && extra > 0 && !expanded;
+
+  return (
+    <>
+      <ul id={listId} className="mt-3">
+        {points.map((point, i) => (
+          <li
+            key={i}
+            className={cn(
+              "mb-1 flex gap-2.5 text-[14.5px] leading-[1.6] text-foreground/85",
+              "before:flex-none before:font-mono before:text-subtle before:content-['+']",
+              collapsed && i >= VISIBLE_BULLETS && "hidden"
+            )}
+          >
+            {point}
+          </li>
+        ))}
+      </ul>
+      {hydrated && extra > 0 && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={listId}
+          onClick={() => setExpanded((v) => !v)}
+          className={cn(
+            "pl-[18px] pt-0.5 text-[13px] text-muted-foreground hover:text-foreground hover:underline hover:underline-offset-[3px]",
+            focusRing
+          )}
+        >
+          {expanded ? "Show less" : `Show ${extra} more`}
+        </button>
+      )}
+    </>
+  );
+}
 
 export const Experience = () => {
+  const jobs = resumeData.experience;
+
   return (
-    <section id="experience" className="py-16 space-y-8">
-      <FadeIn>
-        <h2 className="text-4xl font-bold tracking-tight">Experience</h2>
-      </FadeIn>
+    <section id="experience" className="pt-[72px] pb-4">
+      <div className="mb-2 font-mono text-[12.5px] text-subtle">$ cat experience.log</div>
+      <h2 className="mb-9 text-[36px] font-bold tracking-[-0.03em] max-[600px]:text-[30px]">Experience</h2>
 
       <div className="relative">
-        {/* Vertical timeline line */}
-        <div className="absolute left-6 top-6 bottom-0 w-px bg-gradient-to-b from-primary/50 via-border to-transparent" />
+        {/* Residual-stream line: the only cyan in these sections, tying back to the hero. */}
+        <div
+          aria-hidden="true"
+          className="absolute top-1.5 bottom-10 left-[19.5px] w-px bg-[linear-gradient(to_bottom,rgba(76,201,240,.35),rgba(76,201,240,.06))]"
+        />
 
-        <div className="space-y-0">
-          {resumeData.experience.map((job, index) => (
-            <FadeIn key={index} delay={index * 0.1}>
-              <div className="flex gap-8 relative group">
-                {/* Timeline node */}
-                <div className="relative z-10 shrink-0">
-                  {/* Rounded-square tile: logos are mixed shapes with their own backgrounds, so each fills the tile */}
-                  <Avatar className="h-12 w-12 border-2 border-border group-hover:border-primary/60 bg-background rounded-lg transition-all duration-300 shadow-sm group-hover:shadow-primary/20 group-hover:shadow-md">
-                    <AvatarImage
-                      src={job.logo ?? ""}
-                      alt={job.company}
-                      className="object-cover bg-white"
-                      style={job.logoScale ? { transform: `scale(${job.logoScale})` } : undefined}
-                    />
-                    <AvatarFallback className="font-bold text-primary text-sm bg-primary/10 rounded-none">
-                      {job.company.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+        {jobs.map((job, index) => (
+          <article key={job.company + job.date} className="relative grid grid-cols-[40px_1fr] gap-[22px] pb-10">
+            <LogoTile job={job} />
+
+            <div className="min-w-0">
+              {/* Newest role gets the highest layer number. */}
+              <div className="mb-[3px] font-mono text-[11px] text-subtle">
+                layer {String(jobs.length - index).padStart(2, "0")}
+              </div>
+
+              <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-1.5">
+                <div className="min-w-0">
+                  <h3 className="text-[17px] font-semibold tracking-[-0.01em]">{job.role}</h3>
+                  <div className="mt-0.5 text-sm text-muted-foreground">
+                    {job.company} · {job.location}
+                  </div>
                 </div>
-
-                {/* Content */}
-                <div className="flex-1 pb-12 pt-1">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-3">
-                    <div>
-                      <h3 className="text-lg font-bold tracking-tight leading-tight">
-                        {job.role}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-medium mt-0.5">
-                        {job.company} · {job.location}
-                      </p>
-                    </div>
-                    <div className="text-xs text-muted-foreground bg-secondary/50 px-3 py-1 rounded-full font-mono whitespace-nowrap shrink-0">
-                      {job.date}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {job.techStack.map((tech) => (
-                      <Badge
-                        key={tech}
-                        variant="secondary"
-                        className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm font-medium bg-primary/10 text-primary border-primary/10 shadow-none"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <ul className="space-y-2">
-                    {job.points.map((point, idx) => (
-                      <li key={idx} className="flex gap-2.5 text-sm">
-                        <div className="mt-2 shrink-0 h-1.5 w-1.5 rounded-full bg-primary/40" />
-                        <span className="text-foreground/85 leading-relaxed">
-                          {point}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="text-right max-[600px]:text-left">
+                  <div className="whitespace-nowrap font-mono text-xs text-muted-foreground">{dateRange(job.date)}</div>
+                  {job.highlight && <div className="mt-[3px] text-[13.5px] text-primary">{job.highlight}</div>}
                 </div>
               </div>
-            </FadeIn>
-          ))}
-        </div>
+
+              <Bullets points={job.points} />
+
+              <div className="mt-2.5 font-mono text-xs leading-[1.7] text-subtle">{joinTags(job.techStack)}</div>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

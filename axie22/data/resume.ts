@@ -1,11 +1,23 @@
+export type ProjectCategory = "LLM systems" | "Applied ML" | "Systems";
+
 export interface Project {
   title: string;
   techStack: string[];
   date: string;
+  /** Full bullets (resume PDF etc.). The site shows `summary` instead. */
   points: string[];
   github?: string;
-  link?: string;
-  image?: string;
+  /** One-sentence summary used in the card header / list row. */
+  summary: string;
+  /** Only featured projects render as cards; everything else is a list row. */
+  featured?: {
+    kind: string; // e.g. "Real-time voice agent"
+    architecture: string[]; // rendered as "a → b → c"
+    architectureNote?: string; // one dim sentence under the pipeline
+    howItWorks: string;
+  };
+  /** Filter category for the "More projects" list. */
+  category: ProjectCategory;
 }
 
 export interface ExperienceEntry {
@@ -18,6 +30,8 @@ export interface ExperienceEntry {
   logoScale?: number;
   techStack: string[];
   points: string[];
+  /** Short headline result, shown in amber under the date. Omit to show nothing. */
+  highlight?: string;
 }
 
 export const resumeData = {
@@ -60,6 +74,7 @@ export const resumeData = {
       location: "Boston, MA",
       date: "Jun 2025 - Aug 2025",
       logo: "/amazon.png",
+      highlight: "93% faster config creation",
       techStack: ["Bedrock", "Lambda", "DynamoDB", "OpenSearch", "CDK"],
       points: [
         "Built a Bedrock AI agent that automated config generation, reducing creation time by 93% for 400+ developers",
@@ -74,6 +89,7 @@ export const resumeData = {
       location: "Remote",
       date: "Jul 2024 - Dec 2024",
       logo: null,
+      highlight: "+18% forecast accuracy",
       techStack: ["PyTorch", "Python", "Pandas", "Scikit-learn"],
       points: [
         "Automated ETL pipelines for ingest, cleaning, and feature engineering in PyTorch, cutting runtime by 50%",
@@ -84,8 +100,9 @@ export const resumeData = {
       company: "New York University",
       role: "Student Computer Technician and Developer",
       location: "New York, NY",
-      date: "Feb 2024 - Present",
+      date: "Feb 2024 - May 2026",
       logo: "/nyu.png",
+      highlight: "45% fewer misconfigurations",
       techStack: ["Bash", "Linux", "Python", "Networking"],
       points: [
         "Automated security configuration enforcement in Bash across 700+ systems, reducing misconfigurations by 45%",
@@ -99,6 +116,7 @@ export const resumeData = {
       location: "Sunnyvale, CA",
       date: "Jun 2023 - Aug 2023",
       logo: "/fortinet.png",
+      highlight: "400+ vulnerabilities fixed",
       techStack: ["Python", "Burp Suite", "SAST", "SQL"],
       points: [
         "Detected and remediated 400+ vulnerabilities, preventing XSS, SQL injection, and privilege-escalation attacks",
@@ -118,9 +136,18 @@ export const resumeData = {
         "Docker",
       ],
       date: "Sept 2025 - Present",
-      link: "https://orbit-mmos8.ondigitalocean.app/",
       github: "https://github.com/axie22/Orbit",
-      image: "/Orbit.png",
+      summary:
+        "A real-time AI technical interviewer you talk to. It listens, keeps track of the conversation, and answers out loud.",
+      category: "LLM systems",
+      featured: {
+        kind: "Real-time voice agent",
+        architecture: ["LiveKit audio", "speech-to-text", "Gemini (Vertex AI)", "ElevenLabs TTS", "LiveKit audio"],
+        architectureNote:
+          "LLM calls run in a dedicated inference worker, separate from the Next.js app, so real-time audio never waits on the UI.",
+        howItWorks:
+          "Context-aware prompting with conversation memory, so it gives structured, interview-style guidance instead of one-off answers.",
+      },
       points: [
         "Built a real-time AI tech interviewer using LiveKit for low-latency audio streaming and session orchestration",
         "Designed an end-to-end STT → LLM → TTS pipeline using Vertex AI and ElevenLabs for real-time voice feedback",
@@ -129,21 +156,55 @@ export const resumeData = {
       ],
     },
     {
-      title: "Gauge",
-      techStack: [
-        "Next.js 16",
-        "TypeScript",
-        "Ollama",
-        "PostgreSQL",
-        "Tailwind CSS",
-      ],
-      date: "Mar 2026 - Present",
-      github: "https://github.com/axie22/Gauge",
+      // TODO(alex): new name
+      title: "Aura",
+      techStack: ["GitHub Apps", "Gemini 1.5 Flash", "Playwright", "Next.js"],
+      date: "Feb 2025 - Present",
+      github: "https://github.com/axie22/Aura",
+      summary:
+        "A GitHub App that records a video of your UI change actually working and posts it on the pull request.",
+      category: "LLM systems",
+      featured: {
+        kind: "Agentic code review",
+        architecture: ["PR webhook", "Gemini reads the diff", "writes a Playwright script", "sandboxed run", "video posted to the PR"],
+        howItWorks:
+          "Reviewers get visual proof instead of “trust me, the button works”, with tests generated from the diff rather than written by hand.",
+      },
       points: [
-        "Built a personal training intelligence dashboard that connects to Hevy workout history and WHOOP biometric data",
-        "Engineered a full analytics pipeline with ACWR calculations, plateau detection, and session quality scoring",
-        "Implemented AI coaching powered by local Ollama models with complete training context for personalized guidance",
-        "Designed six dedicated pages covering training, recovery, nutrition, and analytics with real-time data visualization",
+        "Developed a GitHub App that automatically generates video walkthroughs for UI changes in Pull Requests",
+        "Integrated Gemini 1.5 Flash to analyze code diffs and synthesize Playwright scripts for visual verification",
+        "Orchestrated a secure, sandboxed execution environment to run generated tests and capture video artifacts",
+        "Streamlined code review by embedding visual proof-of-work directly into PR comments, reducing review time",
+      ],
+    },
+    {
+      title: "LLM Inference Engineering",
+      techStack: ["PyTorch", "CUDA", "Jupyter"],
+      // TODO(alex): confirm the start date (taken from the repo's creation date).
+      date: "Apr 2026 - Present",
+      github: "https://github.com/axie22/llm-inference-engineering",
+      summary:
+        "An 8-week workshop on LLM inference: KV caching, FlashAttention, batching, quantization, and serving, with lecture notes and Jupyter labs.",
+      category: "LLM systems",
+      points: [],
+    },
+    {
+      title: "Turtl.Bio",
+      techStack: [
+        "System Architecture",
+        "LLMs",
+        "Retrieval-Augmented Generation",
+        "API Design",
+      ],
+      date: "Aug 2025 - Present",
+      github: "https://github.com/axie22/Turtl.Bio",
+      summary:
+        "Regulatory intelligence for biotech: RAG over 1,000+ FDA documents, shaped by 15+ customer discovery interviews.",
+      category: "LLM systems",
+      points: [
+        "Led 15+ customer discovery interviews with pharma and biotech teams to understand regulatory pain points",
+        "Leading AI and infra roadmap for a regulatory intelligence platform serving insights from 1,000+ FDA documents",
+        "Designing scalable APIs and RAG pipelines to answer regulatory questions from FDA filings",
       ],
     },
     {
@@ -158,6 +219,9 @@ export const resumeData = {
       ],
       date: "Mar 2026 - Present",
       github: "https://github.com/axie22/DailyNews",
+      summary:
+        "ML news aggregator that scrapes arXiv, Hugging Face, RSS, and X every 6 hours, dedupes, and summarizes locally with Ollama.",
+      category: "LLM systems",
       points: [
         "Built an ML news aggregator with scheduled scraping from arXiv, Hugging Face, RSS feeds, and X/Twitter API",
         "Engineered a pipeline that deduplicates articles, summarizes them via local Ollama models, and stores in Postgres",
@@ -166,34 +230,24 @@ export const resumeData = {
       ],
     },
     {
-      title: "Chip8 Emulator",
-      techStack: ["C++", "SDL2", "CMake", "Emulation"],
-      date: "Jan 2025 - Feb 2025",
-      github: "https://github.com/axie22/Chip8Emulator",
-      image: "/Chip8.png",
-      points: [
-        "Built a fully functional Chip-8 emulator in C++ implementing all 35 opcodes for accurate ROM execution",
-        "Engineered a display system using SDL2 to render a 64×32 framebuffer at 60 Hz with configurable scaling",
-        "Implemented precise CPU timing and sound timer logic to ensure authentic gameplay speed and audio feedback",
-        "Added debug tooling including register dumps and memory inspection to streamline opcode troubleshooting",
-      ],
-    },
-    {
-      title: "Turtl.Bio",
+      title: "Gauge",
       techStack: [
-        "System Architecture",
-        "LLMs",
-        "Retrieval-Augmented Generation",
-        "API Design",
+        "Next.js 16",
+        "TypeScript",
+        "Ollama",
+        "PostgreSQL",
+        "Tailwind CSS",
       ],
-      date: "Aug 2025 - Present",
-      link: "https://turtl-bio-p8aqj.ondigitalocean.app/",
-      github: "https://github.com/axie22/Turtl.Bio",
-      image: "/Turtl.png",
+      date: "Mar 2026 - Present",
+      github: "https://github.com/axie22/Gauge",
+      summary:
+        "Training dashboard over Hevy and WHOOP data with ACWR, plateau detection, and local-LLM coaching.",
+      category: "Applied ML",
       points: [
-        "Led 15+ customer discovery interviews with pharma and biotech teams to understand regulatory pain points",
-        "Leading AI and infra roadmap for a regulatory intelligence platform serving insights from 1,000+ FDA documents",
-        "Designing scalable APIs and RAG pipelines to answer regulatory questions from FDA filings",
+        "Built a personal training intelligence dashboard that connects to Hevy workout history and WHOOP biometric data",
+        "Engineered a full analytics pipeline with ACWR calculations, plateau detection, and session quality scoring",
+        "Implemented AI coaching powered by local Ollama models with complete training context for personalized guidance",
+        "Designed six dedicated pages covering training, recovery, nutrition, and analytics with real-time data visualization",
       ],
     },
     {
@@ -201,6 +255,9 @@ export const resumeData = {
       techStack: ["Python", "TensorFlow", "MediaPipe", "OpenCV"],
       date: "Feb 2025 - Aug 2025",
       github: "https://github.com/axie22/ASLingo",
+      summary:
+        "Real-time ASL alphabet recognition from 21 MediaPipe hand landmarks, classifying 26 letters with TensorFlow.",
+      category: "Applied ML",
       points: [
         "Built a real-time ASL alphabet recognition system using MediaPipe Hands to extract 21 3D hand landmarks per frame",
         "Trained a TensorFlow classifier on labeled gesture frames to recognize 26 ASL letter signs",
@@ -209,15 +266,18 @@ export const resumeData = {
       ],
     },
     {
-      title: "Aura",
-      techStack: ["GitHub Apps", "Gemini 1.5 Flash", "Playwright", "Next.js"],
-      date: "Feb 2025 - Present",
-      github: "https://github.com/axie22/Aura",
+      title: "Chip8 Emulator",
+      techStack: ["C++", "SDL2", "CMake", "Emulation"],
+      date: "Jan 2025 - Feb 2025",
+      github: "https://github.com/axie22/Chip8Emulator",
+      summary:
+        "All 35 opcodes in C++, a 64×32 framebuffer at 60 Hz via SDL2, with register and memory debug tools.",
+      category: "Systems",
       points: [
-        "Developed a GitHub App that automatically generates video walkthroughs for UI changes in Pull Requests",
-        "Integrated Gemini 1.5 Flash to analyze code diffs and synthesize Playwright scripts for visual verification",
-        "Orchestrated a secure, sandboxed execution environment to run generated tests and capture video artifacts",
-        "Streamlined code review by embedding visual proof-of-work directly into PR comments, reducing review time",
+        "Built a fully functional Chip-8 emulator in C++ implementing all 35 opcodes for accurate ROM execution",
+        "Engineered a display system using SDL2 to render a 64×32 framebuffer at 60 Hz with configurable scaling",
+        "Implemented precise CPU timing and sound timer logic to ensure authentic gameplay speed and audio feedback",
+        "Added debug tooling including register dumps and memory inspection to streamline opcode troubleshooting",
       ],
     },
   ] satisfies Project[],

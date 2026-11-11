@@ -1,178 +1,165 @@
 "use client";
 
-import { useRef } from "react";
-import {
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { resumeData, type Project } from "@/data/resume";
-import { FadeIn } from "@/components/animations/FadeIn";
-import { motion } from "framer-motion";
-import { ExternalLink, ArrowRight, Github, ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { useState } from "react";
+import { resumeData, type Project, type ProjectCategory } from "@/data/resume";
+import { cn, dateRange, joinTags } from "@/lib/utils";
+import { useHydrated } from "@/lib/useHydrated";
 
-export const Projects = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+const focusRing =
+  "focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const scrollAmount = 400;
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
+function GitHubLink({ href, title }: { href: string; title: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${title} on GitHub`}
+      className={cn(
+        "whitespace-nowrap text-[13.5px] text-muted-foreground hover:text-foreground hover:underline hover:underline-offset-[3px]",
+        focusRing
+      )}
+    >
+      GitHub ↗
+    </a>
+  );
+}
+
+/** "a → b → c". Each "→ step" pair is one nowrap span so an arrow never starts a line alone. */
+function Pipeline({ steps }: { steps: string[] }) {
+  return (
+    <span>
+      {steps.map((step, i) =>
+        i === 0 ? (
+          <span key={i}>{step}</span>
+        ) : (
+          // The space before the span is the line-break opportunity; inside the span nothing breaks.
+          <span key={i}>
+            {" "}
+            <span className="whitespace-nowrap">
+              <span className="text-subtle">→</span> {step}
+            </span>
+          </span>
+        )
+      )}
+    </span>
+  );
+}
+
+function FeaturedCard({ project }: { project: Project & { featured: NonNullable<Project["featured"]> } }) {
+  const { featured } = project;
+  const dt = "mt-3.5 text-[12.5px] text-subtle";
+  const dd = "mt-[3px] border-b pb-3.5 text-sm leading-[1.6] text-foreground/90";
 
   return (
-    <section id="projects" className="py-24 space-y-12">
-      <FadeIn>
-        <div className="flex flex-col md:flex-row justify-between items-end gap-4">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-4xl font-bold tracking-tight">Featured Projects</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl">
-              A selection of systems and applications that I've been working on recently.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => scroll("left")}
-              className="rounded-full hover:bg-muted"
-              aria-label="Scroll projects left"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => scroll("right")}
-              className="rounded-full hover:bg-muted"
-              aria-label="Scroll projects right"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </FadeIn>
+    <article className="flex flex-col rounded-[10px] border bg-card px-[22px] pt-[22px] pb-1.5">
+      <div className="mb-1.5 flex justify-between gap-3 text-[12.5px] text-subtle">
+        <span>{featured.kind}</span>
+        <span className="whitespace-nowrap font-mono">{dateRange(project.date)}</span>
+      </div>
+      <h3 className="text-[21px] font-semibold tracking-[-0.02em]">{project.title}</h3>
+      <p className="mt-1.5 mb-4 text-[14.5px] leading-[1.55] text-muted-foreground">{project.summary}</p>
 
-      <div className="relative w-full">
-        <div
-          ref={scrollRef}
-          className="overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory"
-        >
-          <div className="flex gap-6 w-max">
-            {resumeData.projects.map((project: Project, index: number) => (
-              <div
-                key={index}
-                className="w-[85vw] md:w-[350px] shrink-0 snap-center"
-              >
-                <FadeIn delay={index * 0.1}>
-                  <motion.div
-                    whileHover={{ y: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    className="h-full"
-                  >
-                    <SpotlightCard className="flex flex-col h-full bg-card/30 border-muted/20 backdrop-blur-xl hover:border-primary/20 transition-colors p-0 overflow-hidden group">
-                      {project.image ? (
-                         <div className="relative w-full aspect-[2/1] border-b border-muted/20 overflow-hidden">
-                             <Image
-                               src={project.image}
-                               alt={project.title}
-                               fill
-                               className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                             />
-                         </div>
-                      ) : (
-                        <div className="relative w-full aspect-[2/1] border-b border-muted/20 overflow-hidden bg-muted/10 flex items-center justify-center">
-                            <div className="text-4xl font-bold text-muted-foreground/20 select-none">
-                                {project.title.substring(0, 2).toUpperCase()}
-                            </div>
-                        </div>
-                      )}
+      <dl className="border-t">
+        <dt className={dt}>Architecture</dt>
+        <dd className={dd}>
+          <Pipeline steps={featured.architecture} />
+          {featured.architectureNote && (
+            <div className="mt-1.5 text-[13.5px] text-muted-foreground">{featured.architectureNote}</div>
+          )}
+        </dd>
+        <dt className={dt}>How it works</dt>
+        <dd className={dd}>{featured.howItWorks}</dd>
+        <dt className={dt}>Stack</dt>
+        <dd className={cn(dd, "border-b-0 font-mono text-[12.5px] text-muted-foreground")}>
+          {joinTags(project.techStack)}
+        </dd>
+      </dl>
 
-                      <div className="flex flex-col flex-grow p-5">
-                          <CardHeader className="p-0 space-y-3 mb-3">
-                          <div className="flex justify-between items-start gap-4">
-                              <div className="space-y-1">
-                                  <CardTitle className="text-xl font-bold tracking-tight">{project.title}</CardTitle>
-                                  <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
-                                      {project.date}
-                                  </p>
-                              </div>
-                              <div className="flex gap-1">
-                                {project.github && (
-                                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
-                                        <Link
-                                          href={project.github}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          aria-label={`View ${project.title} on GitHub`}
-                                        >
-                                            <Github className="h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                )}
-                                {project.link && (
-                                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
-                                        <Link
-                                          href={project.link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          aria-label={`View ${project.title} live deployment`}
-                                        >
-                                            <ExternalLink className="h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                )}
-                              </div>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                              {project.techStack.map((tech) => (
-                              <Badge
-                                  key={tech}
-                                  variant="secondary"
-                                  className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/10 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-none font-medium transition-colors"
-                              >
-                                  {tech}
-                              </Badge>
-                              ))}
-                          </div>
-                          </CardHeader>
-                          <CardContent className="p-0 flex-grow space-y-3">
-                          <div className="space-y-1.5">
-                              {project.points.map((point, idx) => (
-                              <div key={idx} className="flex gap-2.5 text-sm text-muted-foreground leading-relaxed group/item">
-                                  <div className="mt-1.5 shrink-0 h-1.5 w-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors" />
-                                  <span className="text-foreground/80 line-clamp-2">{point}</span>
-                              </div>
-                              ))}
-                          </div>
-                          </CardContent>
-                          {project.link && (
-                              <CardFooter className="p-0 pt-4 mt-auto">
-                                  <Button asChild variant="link" className="p-0 h-auto font-semibold text-primary group-hover:underline-offset-4 decoration-primary/30">
-                                      <Link href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm">
-                                          View Deployment <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                                      </Link>
-                                  </Button>
-                              </CardFooter>
-                          )}
-                      </div>
-                    </SpotlightCard>
-                  </motion.div>
-                </FadeIn>
-              </div>
-            ))}
-          </div>
+      {/* mt-auto pins the link to the bottom so both cards' links line up. */}
+      {project.github && (
+        <div className="mt-auto border-t pt-3 pb-3.5">
+          <GitHubLink href={project.github} title={project.title} />
         </div>
+      )}
+    </article>
+  );
+}
+
+function ProjectRow({ project, hidden }: { project: Project; hidden: boolean }) {
+  return (
+    <article
+      hidden={hidden}
+      className="grid grid-cols-[1fr_auto] gap-x-6 gap-y-1 border-b py-[18px] max-[600px]:grid-cols-1"
+    >
+      <div className="min-w-0">
+        <h4 className="text-base font-semibold">{project.title}</h4>
+        <p className="mt-1 max-w-[640px] text-sm leading-[1.55] text-muted-foreground">{project.summary}</p>
+        <div className="mt-1.5 font-mono text-xs leading-[1.7] text-subtle">{joinTags(project.techStack)}</div>
+      </div>
+      <div className="flex flex-col items-end gap-1.5 text-right max-[600px]:flex-row max-[600px]:items-center max-[600px]:gap-4 max-[600px]:text-left">
+        <span className="whitespace-nowrap font-mono text-[11.5px] text-subtle">{dateRange(project.date)}</span>
+        {project.github && <GitHubLink href={project.github} title={project.title} />}
+      </div>
+    </article>
+  );
+}
+
+type Filter = "All" | ProjectCategory;
+
+export const Projects = () => {
+  const hydrated = useHydrated();
+  const [filter, setFilter] = useState<Filter>("All");
+
+  const projects: Project[] = resumeData.projects;
+  const featured = projects.filter(
+    (p): p is Project & { featured: NonNullable<Project["featured"]> } => !!p.featured
+  );
+  const rows = projects.filter((p) => !p.featured);
+  // Tabs come from the rows themselves, in first-appearance order, so an empty category never gets a tab.
+  const tabs: Filter[] = ["All", ...new Set(rows.map((p) => p.category))];
+
+  return (
+    <section id="projects" className="pt-[72px] pb-4">
+      <div className="mb-2 font-mono text-[12.5px] text-subtle">$ ls projects/</div>
+      <h2 className="mb-9 text-[36px] font-bold tracking-[-0.03em] max-[600px]:text-[30px]">Projects</h2>
+
+      <div className="grid grid-cols-2 gap-4 max-[800px]:grid-cols-1">
+        {featured.map((project) => (
+          <FeaturedCard key={project.title} project={project} />
+        ))}
+      </div>
+
+      <div className="mt-14 mb-1 flex flex-wrap items-baseline justify-between gap-4">
+        <h3 className="text-lg font-semibold">More projects</h3>
+        <div role="group" aria-label="Filter projects" className="flex flex-wrap gap-[18px]">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              aria-pressed={filter === tab}
+              onClick={() => setFilter(tab)}
+              className={cn(
+                "border-b border-transparent py-1 text-[13.5px] text-muted-foreground hover:text-foreground",
+                filter === tab && "border-primary text-foreground",
+                focusRing
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t">
+        {rows.map((project) => (
+          <ProjectRow
+            key={project.title}
+            project={project}
+            // Filter only after hydration, so no-JS readers see every row. Rows stay mounted.
+            hidden={hydrated && filter !== "All" && project.category !== filter}
+          />
+        ))}
       </div>
     </section>
   );

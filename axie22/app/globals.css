@@ -28,6 +28,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
@@ -62,6 +63,7 @@
   --secondary-foreground: #e6e9ef;
   --muted: #121722;
   --muted-foreground: #8a93a6;
+  --subtle: #5d6679; /* labels and tags only; too low-contrast for paragraphs */
   --accent: #121722;
   --accent-foreground: #e6e9ef;
   --destructive: #ff6b6b;
