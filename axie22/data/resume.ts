@@ -325,31 +325,31 @@ export const resumeData = {
       {
         name: "Claude Certified Developer - Foundations",
         issuer: "Anthropic",
-        image: "https://images.credly.com/images/f101c6ac-8a2d-4220-b381-70e3e6c364e3/linkedin_thumb_blob",
+        image: "/certs/claude-certified-developer.svg",
         link: "https://www.credly.com/badges/c82ff778-e886-413e-94d0-0d2ab5d38a7e/public_url",
       },
       {
         name: "Open Source Contributor",
         issuer: "IBM",
-        image: "https://images.credly.com/images/46512f2a-864c-4c7b-bb2d-73555fd6d52e/linkedin_thumb_Open-Source-Contributor.png",
+        image: "/certs/open-source-contributor.svg",
         link: "https://www.credly.com/badges/fe25b7f5-04f3-44f6-aeb9-1da074ff12f9/public_url",
       },
       {
         name: "Trustworthy AI and AI Ethics",
         issuer: "IBM",
-        image: "https://images.credly.com/images/817e6df0-5259-46a8-a739-fade09ea0a1d/linkedin_thumb_Trustworthy-AI-and-AI-Ethics-Foundations.png",
+        image: "/certs/trustworthy-ai.svg",
         link: "https://www.credly.com/badges/e01bc386-11e4-4161-954e-cde6d0258f22/public_url",
       },
       {
         name: "Containers & Kubernetes Essentials",
         issuer: "IBM",
-        image: "https://images.credly.com/images/82966826-6630-4768-80d4-6028b3fab414/linkedin_thumb_image.png",
+        image: "/certs/containers-kubernetes.svg",
         link: "https://www.credly.com/badges/7d820027-2e0f-4730-bf84-63af6335ffca/public_url",
       },
       {
         name: "IBM DevSecOps Explorer - Security & Automation for DevOps",
         issuer: "IBM",
-        image: "https://images.credly.com/images/11738ad9-7dc0-45c1-ada0-918730663c1e/linkedin_thumb_IBM-DevSecOps-Explorer---Security-and-Automation-for-DevOps.png",
+        image: "/certs/devsecops-explorer.svg",
         link: "https://www.credly.com/badges/9b29370e-7cf2-4154-ad21-85376ffa6c7a/public_url",
       },
       {
