@@ -323,6 +323,12 @@ export const resumeData = {
     ],
     certifications: [
       {
+        name: "Claude Certified Architect - Foundations",
+        issuer: "Anthropic",
+        image: "/certs/claude-certified-architect.svg",
+        link: "https://www.credly.com/badges/d585b1a9-2a88-4107-9d51-9a0c905cf032/public_url",
+      },
+      {
         name: "Claude Certified Developer - Foundations",
         issuer: "Anthropic",
         image: "/certs/claude-certified-developer.svg",
